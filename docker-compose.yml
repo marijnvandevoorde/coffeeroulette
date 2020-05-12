@@ -1,0 +1,33 @@
+version: '3.3'
+services:
+  webserver:
+    environment:
+      - VIRTUAL_HOST=zoomroulette.isitspringyet.be
+      - VIRTUAL_PORT=8000
+      - LETSENCRYPT_HOST=zoomroulette.isitspringyet.be
+      - LETSENCRYPT_EMAIL=marijnnn@gmail.com
+    image: 'nginx:alpine'
+    container_name: zoomroulette-webserver
+    working_dir: /application
+    volumes:
+      - '.:/code'
+      - './docker/nginx.conf:/etc/nginx/conf.d/default.conf'
+      - './logs:/var/log/nginx'
+    depends_on:
+      - php-fpm
+    expose:
+      - '8000'
+    ports:
+      - '9009:8000'
+  php-fpm:
+    image: 'php:7.4-fpm-alpine'
+    container_name: zoomroulette-php-fpm
+    working_dir: /code
+    expose:
+      - '9000'
+    volumes:
+      - '.:/code'
+networks:
+  default:
+    external:
+      name: marijnworks
