@@ -4,10 +4,12 @@
 namespace Teamleader\Zoomroulette\Zoom;
 
 
+use Exception;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
 class OauthRequestHandler
 {
@@ -15,10 +17,15 @@ class OauthRequestHandler
      * @var OauthProvider
      */
     private $oauthProvider;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
-    public function __construct(OauthProvider $oauthProvider)
+    public function __construct(OauthProvider $oauthProvider, LoggerInterface $logger)
     {
         $this->oauthProvider = $oauthProvider;
+        $this->logger = $logger;
     }
 
     public function __invoke(RequestInterface $request, ResponseInterface $response, $args)
@@ -74,14 +81,12 @@ class OauthRequestHandler
                 );
                 /** @var  $response */
                 $response = $this->oauthProvider->getParsedResponse($request);
-                var_dump($response);
-                exit;
+                $this->logger->debug('created meeting', $response);
 
             } catch (IdentityProviderException $e) {
-
-                // Failed to get the access token or user details.
-                exit($e->getMessage());
-
+                $this->logger->error('Failed to get access token or user details', $e->getTrace());
+            } catch (Exception $e) {
+                $this->logger->error('Failed to get access token or user details', $e->getTrace());
             }
         }
     }

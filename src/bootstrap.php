@@ -2,6 +2,9 @@
 
 use League\Container\Container;
 use League\Container\ReflectionContainer;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Teamleader\Zoomroulette\Zoom\OauthProvider;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -20,4 +23,11 @@ $container->share( OauthProvider::class, function () use ($container) {
         'urlAccessToken' => 'https://zoom.us/oauth/token',
         'urlResourceOwnerDetails' => 'https://api.zoom.us/v2/users/me'
     ]);
+});
+
+
+$container->share(LoggerInterface::class, function () {
+    $log = new Logger('zoomroulette');
+    $log->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+    return $log;
 });
