@@ -4,6 +4,8 @@
 namespace Teamleader\Zoomroulette\Zoom;
 
 
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -51,30 +53,31 @@ class OauthRequestHandler
                 $accessToken = $this->oauthProvider->getAccessToken('authorization_code', [
                     'code' => $_GET['code']
                 ]);
-
-                // We have an access token, which we may use in authenticated
-                // requests against the service provider's API.
-                echo 'Access Token: ' . $accessToken->getToken() . "<br>";
-                echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
-                echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
-                echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
-
-                // Using the access token, we may look up details about the
-                // resource owner.
+                $data = [
+                    'access_token' => $accessToken->getToken(),
+                    'refresh_token' => $accessToken->getRefreshToken(),
+                    'expires' => $accessToken->getExpires()
+                ];
                 $resourceOwner = $this->oauthProvider->getResourceOwner($accessToken);
+                $data['user_id'] = $resourceOwner->getId();
 
-                var_export($resourceOwner->toArray());
+                $tokenData = json_encode($accessToken);
 
-                // The provider provides a way to get an authenticated API request for
-                // the service, using the access token; it returns an object conforming
-                // to Psr\Http\Message\RequestInterface.
+                /** @var AccessToken $aToken */
+                $aToken = json_decode($tokenData);
+
+
                 $request = $this->oauthProvider->getAuthenticatedRequest(
-                    'GET',
-                    'http://brentertainment.com/oauth2/lockdin/resource',
-                    $accessToken
+                    'POST',
+                    sprintf('https://api.zoom.us/v2/users/%s/meetings', $aToken->getResourceOwnerId()),
+                    $aToken
                 );
+                /** @var  $response */
+                $response = $this->oauthProvider->getParsedResponse($request);
+                var_dump($response);
+                exit;
 
-            } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+            } catch (IdentityProviderException $e) {
 
                 // Failed to get the access token or user details.
                 exit($e->getMessage());
