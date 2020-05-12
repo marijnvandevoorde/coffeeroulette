@@ -26,6 +26,10 @@ services:
       - '9000'
     volumes:
       - '.:/code'
+    environment:
+      - ZOOM_CLIENTID=${ZOOM_CLIENTID}
+      - ZOOM_CLIENTSECRET=${ZOOM_CLIENTSECRET}
+      - ROOT_URL=${ROOT_URL}
 networks:
   default:
     external:
