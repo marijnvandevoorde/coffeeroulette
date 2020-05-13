@@ -3,6 +3,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
+use Teamleader\Zoomroulette\Zoom\MeetingTestRequestHandler;
 use Teamleader\Zoomroulette\Zoom\OauthRequestHandler;
 
 require __DIR__ . '/../src/bootstrap.php';
@@ -16,6 +17,7 @@ $app->get('/', function (Request $request, Response $response, $args) {
 });
 $app->group('/zoom', function (RouteCollectorProxy $group) {
     $group->get('/oauth-redirect', OauthRequestHandler::class);
+    $group->get('/meeting-test/{user_id}', MeetingTestRequestHandler::class);
 });
 
 
