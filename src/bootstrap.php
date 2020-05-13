@@ -6,6 +6,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Teamleader\Zoomroulette\Zoom\OauthProvider;
+use Teamleader\Zoomroulette\Zoom\ZoomOauthStorage;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -30,4 +31,8 @@ $container->share(LoggerInterface::class, function () {
     $log = new Logger('zoomroulette');
     $log->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
     return $log;
+});
+
+$container->share(ZoomOauthStorage::class, function () {
+   return new ZoomOauthStorage(__DIR__ . '/../storage/');
 });
