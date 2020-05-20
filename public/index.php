@@ -46,7 +46,7 @@ $app->group('/auth', function (RouteCollectorProxy $group) {
     ->add($container->get(SessionMiddleware::class));
 
 $app->group('/zoom', function (RouteCollectorProxy $group) {
-   $group->get('/spin', SpinCommandHandler::class);
+   $group->post('/spin', SpinCommandHandler::class);
 });
 
 
