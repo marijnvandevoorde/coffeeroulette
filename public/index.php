@@ -6,16 +6,14 @@ use Slim\Routing\RouteCollectorProxy;
 use Teamleader\Zoomroulette\Slack\OauthRequestHandler as SlackOauthRequestHandler;
 use Teamleader\Zoomroulette\Zoom\MeetingTestRequestHandler;
 use Teamleader\Zoomroulette\Zoom\OauthRequestHandler as ZoomOauthRequestHandler;
+use Teamleader\Zoomroulette\Zoomroulette\AuthenticationMiddleware;
+use Teamleader\Zoomroulette\Zoomroulette\SessionMiddleware;
 
 require __DIR__ . '/../src/bootstrap.php';
 
 AppFactory::setContainer($container);
 $app = AppFactory::create();
 
-$app->get('/', function (Request $request, Response $response, $args) {
-    $response->getBody()->write("Hello world!");
-    return $response;
-});
 
 $app->group('/auth', function (RouteCollectorProxy $group) {
     $group->get('/zoom', ZoomOauthRequestHandler::class)->add(AuthenticationMiddleware::class);
@@ -26,11 +24,8 @@ $app->group('/auth', function (RouteCollectorProxy $group) {
         return $response;
     });
 
-});
-$app->group('/zoom', function (RouteCollectorProxy $group) {
-    $group->get('/', ZoomOauthRequestHandler::class);
-    $group->get('/meeting-test/{user_id}', MeetingTestRequestHandler::class);
-});
+})
+    ->add($container->get(SessionMiddleware::class));
 
 
 $app->run();
