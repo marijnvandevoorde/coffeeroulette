@@ -31,6 +31,8 @@ services:
     environment:
       - ZOOM_CLIENTID=${ZOOM_CLIENTID}
       - ZOOM_CLIENTSECRET=${ZOOM_CLIENTSECRET}
+      - SLACK_CLIENTID=${SLACK_CLIENTID}
+      - SLACK_CLIENTSECRET=${SLACK_CLIENTSECRET}
       - ROOT_URL=${ROOT_URL}
 networks:
   default:
