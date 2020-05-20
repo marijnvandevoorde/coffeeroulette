@@ -10,12 +10,6 @@ use SlimSession\Helper;
 
 class AuthenticationMiddleware
 {
-    private string $secret;
-
-    public function __construct(string $secret)
-    {
-        $this->secret = $secret;
-    }
 
     public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

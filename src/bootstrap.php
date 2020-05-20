@@ -12,7 +12,6 @@ use Teamleader\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
 use Teamleader\Zoomroulette\Slack\SlackOauthStorage;
 use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
 use Teamleader\Zoomroulette\Zoom\ZoomOauthStorage;
-use Teamleader\Zoomroulette\Zoomroulette\AuthenticationMiddleware;
 use Teamleader\Zoomroulette\Zoomroulette\SessionMiddleware;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -20,7 +19,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $container = new Container();
 
 $container->share('settings', fn () => [
-    'displayErrorDetails' => getenv('DISPLAY_ERROR_DETAILS') !== 'true',
+    'displayErrorDetails' => getenv('DISPLAY_ERROR_DETAILS') === 'true',
 ]);
 
 $container->share(SessionMiddleware::class, fn () => new SessionMiddleware([
