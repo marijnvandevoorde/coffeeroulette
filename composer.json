@@ -14,7 +14,8 @@
         "http-interop/http-factory-guzzle": "^1.0",
         "monolog/monolog": "^2.0",
         "league/container": "^3.3",
-        "league/oauth2-client":  "^2.4"
+        "league/oauth2-client":  "^2.4",
+        "bryanjhv/slim-session": "^4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.1"

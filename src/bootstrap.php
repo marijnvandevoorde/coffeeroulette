@@ -5,15 +5,25 @@ use League\Container\ReflectionContainer;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Slim\Middleware\Session;
+use SlimSession\Helper;
 use Teamleader\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
 use Teamleader\Zoomroulette\Slack\SlackOauthStorage;
 use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
 use Teamleader\Zoomroulette\Zoom\ZoomOauthStorage;
+use Teamleader\Zoomroulette\Zoomroulette\AuthenticationMiddleware;
+use Teamleader\Zoomroulette\Zoomroulette\SessionMiddleware;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $container = new Container();
 
+
+$container->share(SessionMiddleware::class, fn () => new SessionMiddleware([
+    'name' => 'zoomroulette',
+    'autorefresh' => true,
+    'lifetime' => '20 minutes',
+]));
 // register the reflection container as a delegate to enable auto wiring
 $container->delegate(new ReflectionContainer());
 
