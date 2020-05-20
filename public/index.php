@@ -34,7 +34,7 @@ if (!$container->get('settings')['displayErrorDetails']) {
 
 $app->group('/auth', function (RouteCollectorProxy $group) {
     $group->get('/zoom', ZoomOauthRequestHandler::class)->add(AuthenticationMiddleware::class);
-    $group->get('/slack', SlackOauthRequestHandler::class);
+    $group->get('/slack', SlackOauthRequestHandler::class)->setName('slacklogin');
     $group->get('/', function (Request $request, Response $response, $args) {
 
         var_dump($_SESSION);
