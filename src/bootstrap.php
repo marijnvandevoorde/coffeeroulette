@@ -6,6 +6,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Slim\Middleware\Session;
+use Slim\Views\Twig;
 use SlimSession\Helper;
 use Teamleader\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
 use Teamleader\Zoomroulette\Slack\SlackOauthStorage;
@@ -18,6 +19,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $container = new Container();
 
+$container->share('settings', fn () => [
+    'displayErrorDetails' => getenv('DISPLAY_ERROR_DETAILS') !== 'true',
+]);
 
 $container->share(SessionMiddleware::class, fn () => new SessionMiddleware([
     'name' => 'zoomroulette',
@@ -36,6 +40,8 @@ $container->share(ZoomOauthProviderAlias::class, fn () => new ZoomOauthProviderA
     'urlResourceOwnerDetails' => 'https://api.zoom.us/v2/users/me',
 ]));
 
+$container->share(Helper::class, fn () => new Helper());
+
 $container->share(SlackOauthProvider::class, function () use ($container) {
     return new SlackOauthProvider([
         'clientId' => getenv('SLACK_CLIENTID'),
@@ -47,10 +53,18 @@ $container->share(SlackOauthProvider::class, function () use ($container) {
     ]);
 });
 
+// Set view in Container
+$container->share(Twig::class, fn () => Twig::create(
+    __DIR__ . '/../templates',
+    [
+        'cache' => __DIR__ . '/../templates/cache',
+    ]
+));
 
 $container->share(LoggerInterface::class, function () {
     $log = new Logger('zoomroulette');
     $log->pushHandler(new StreamHandler('php://stdout', Logger::DEBUG));
+
     return $log;
 });
 
