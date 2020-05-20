@@ -6,6 +6,7 @@ use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Views\TwigMiddleware;
 use Teamleader\Zoomroulette\Slack\OauthRequestHandler as SlackOauthRequestHandler;
+use Teamleader\Zoomroulette\Slack\SpinCommandHandler;
 use Teamleader\Zoomroulette\Zoom\MeetingTestRequestHandler;
 use Teamleader\Zoomroulette\Zoom\OauthRequestHandler as ZoomOauthRequestHandler;
 use Teamleader\Zoomroulette\Zoomroulette\AuthenticationMiddleware;
@@ -44,6 +45,9 @@ $app->group('/auth', function (RouteCollectorProxy $group) {
 })
     ->add($container->get(SessionMiddleware::class));
 
+$app->group('/zoom', function (RouteCollectorProxy $group) {
+   $group->get('/spin', SpinCommandHandler::class);
+});
 
 
 
