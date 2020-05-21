@@ -35,6 +35,8 @@ class SpinCommandHandler
     {
         $this->logger->debug("slash command received", [
             'args' => $args,
+            'isarray' => '' . is_array($request->getParsedBody()),
+            'type' => get_class($request->getParsedBody()),
             'body' => $request->getParsedBody()
         ]);
     }
