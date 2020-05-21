@@ -9,6 +9,7 @@ use Slim\Middleware\Session;
 use Slim\Views\Twig;
 use SlimSession\Helper;
 use Teamleader\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
+use Teamleader\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
 use Teamleader\Zoomroulette\Slack\SlackOauthStorage;
 use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
 use Teamleader\Zoomroulette\Zoom\ZoomOauthStorage;
@@ -27,6 +28,12 @@ $container->share(SessionMiddleware::class, fn () => new SessionMiddleware([
     'autorefresh' => true,
     'lifetime' => '20 minutes',
 ]));
+
+$container->share(SlackCommandAuthenticationMiddleware::class, fn () => new SlackCommandAuthenticationMiddleware(
+    getenv('SLACK_SIGNINGSECRET'),
+    $container->get(LoggerInterface::class)
+));
+
 // register the reflection container as a delegate to enable auto wiring
 $container->delegate(new ReflectionContainer());
 
