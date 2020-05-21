@@ -53,13 +53,15 @@ class SlackCommandAuthenticationMiddleware
             throw new HttpBadRequestException($request, sprintf('Timestap seems off: %s vs server time of %s', [$timestamp[0], time()]));
         }
         if (!hash_equals(
-            'v0:' . hash_hmac('sha256','v0:' . $timestamp . $body, $this->secret),
-            $signature
+            'v0=' . hash_hmac('sha256','v0:' . $timestamp[0] . $body, $this->secret),
+            $signature[0]
         )) {
             $this->logger->error("bad signature", [
                 'body' => $body,
                 'headers' => $request->getHeaders(),
-                'secret' => $this->secret
+                'secret' => $this->secret,
+                'signature' => $signature,
+                'calcualedSignature' => 'v0=' . hash_hmac('sha256','v0:' . $timestamp . $body, $this->secret)
             ]);
             throw new HttpUnauthorizedException($request, "signature seems invalid");
         }

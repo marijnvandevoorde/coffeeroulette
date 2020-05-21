@@ -3,3 +3,4 @@ logs
 vendor
 storage
 templates/cache
+.php_cs.cache
