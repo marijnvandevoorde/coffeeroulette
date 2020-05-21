@@ -39,5 +39,6 @@ class SpinCommandHandler
             'type' => get_class($request->getParsedBody()),
             'body' => $request->getParsedBody()
         ]);
+        $this->logger->debug($request->getParsedBody()['command']);
     }
 }
