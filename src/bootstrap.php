@@ -1,5 +1,7 @@
 <?php
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Monolog\Handler\StreamHandler;
@@ -12,7 +14,7 @@ use Teamleader\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
 use Teamleader\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
 use Teamleader\Zoomroulette\Slack\SlackOauthStorage;
 use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
-use Teamleader\Zoomroulette\Zoom\ZoomOauthStorage;
+use Teamleader\Zoomroulette\Zoom\UserRepository;
 use Teamleader\Zoomroulette\Zoomroulette\SessionMiddleware;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -20,7 +22,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $container = new Container();
 
 $container->share('settings', fn () => [
-    'displayErrorDetails' => getenv('DISPLAY_ERROR_DETAILS') === 'true',
+    'displayErrorDetails' => getenv('DISPLAY_ERROR_DETAILS') !== 'true',
 ]);
 
 $container->share(SessionMiddleware::class, fn () => new SessionMiddleware([
@@ -33,6 +35,11 @@ $container->share(SlackCommandAuthenticationMiddleware::class, fn () => new Slac
     getenv('SLACK_SIGNINGSECRET'),
     $container->get(LoggerInterface::class)
 ));
+
+$container->share(Connection::class, fn () =>
+     DriverManager::getConnection([
+         'url' => getenv('DATABASE_URL')
+]));
 
 // register the reflection container as a delegate to enable auto wiring
 $container->delegate(new ReflectionContainer());
@@ -74,6 +81,6 @@ $container->share(LoggerInterface::class, function () {
     return $log;
 });
 
-$container->share(ZoomOauthStorage::class, fn () => new ZoomOauthStorage(__DIR__ . '/../storage/'));
+$container->share(UserRepository::class, fn () => new UserRepository(__DIR__ . '/../storage/'));
 
 $container->share(SlackOauthStorage::class, fn () => new SlackOauthStorage(__DIR__ . '/../storage/'));
