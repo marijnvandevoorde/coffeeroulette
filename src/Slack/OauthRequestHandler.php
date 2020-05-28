@@ -8,6 +8,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use SlimSession\Helper;
+use Teamleader\Zoomroulette\Zoomroulette\User;
+use Teamleader\Zoomroulette\Zoomroulette\UserNotFoundException;
+use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
 
 class OauthRequestHandler
 {
@@ -22,15 +25,15 @@ class OauthRequestHandler
     private $logger;
 
     /**
-     * @var SlackOauthStorage
+     * @var UserRepository
      */
-    private SlackOauthStorage $slackOauthStorage;
+    private UserRepository $userRepository;
 
-    public function __construct(OauthProvider $oauthProvider, SlackOauthStorage $slackOauthStorage,  LoggerInterface $logger)
+    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository,  LoggerInterface $logger)
     {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
-        $this->zoomOauthStorage = $slackOauthStorage;
+        $this->userRepository = $userRepository;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args)
@@ -63,13 +66,20 @@ class OauthRequestHandler
             $accessToken = $this->oauthProvider->getAccessToken('authorization_code', [
                 'code' => $_GET['code'],
             ]);
-
-            $this->zoomOauthStorage->save($accessToken->getValues()['authed_user']['id'], $accessToken);
-            $request->getAttribute('session')->set('userid', $accessToken->getValues()['authed_user']['id']);
-
-            $response->getBody()->write('All ok!');
-
-            return $response;
+            try {
+                $user = $this->userRepository->findBySsoId('slack', $accessToken->getValues()['authed_user']['id']);
+                $user->setSsoAccessToken($accessToken);
+                $this->userRepository->update($user);
+                $request->getAttribute('session')->set('userid', $user->getId());
+                $response->getBody()->write('All ok!');
+                return $response;
+            } catch (UserNotFoundException $e) {
+                $user = new User('slack', $accessToken->getValues()['authed_user']['id'], $accessToken);
+                $user = $this->userRepository->add($user);
+                $request->getAttribute('session')->set('userid', $user->getId());
+                $response->getBody()->write('All ok!');
+                return $response;
+            }
         } catch (IdentityProviderException $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());
 

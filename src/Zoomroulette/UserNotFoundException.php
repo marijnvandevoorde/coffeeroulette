@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Zoom;
+namespace Teamleader\Zoomroulette\Zoomroulette;
 
 class UserNotFoundException extends \Exception
 {

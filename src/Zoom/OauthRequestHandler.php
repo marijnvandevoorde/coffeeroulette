@@ -4,9 +4,15 @@ namespace Teamleader\Zoomroulette\Zoom;
 
 use Exception;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use PDOException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpForbiddenException;
+use SlimSession\Helper;
+use Teamleader\Zoomroulette\Zoomroulette\User;
+use Teamleader\Zoomroulette\Zoomroulette\UserNotFoundException;
+use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
 
 class OauthRequestHandler
 {
@@ -21,15 +27,16 @@ class OauthRequestHandler
     private $logger;
 
     /**
-     * @var ZoomOauthStorage
+     * @var UserRepository
      */
-    private ZoomOauthStorage $zoomOauthStorage;
+    private UserRepository $userRepository;
 
-    public function __construct(OauthProvider $oauthProvider, ZoomOauthStorage $zoomOauthStorage, LoggerInterface $logger)
+    public function __construct(OauthProvider $oauthProvider,
+        UserRepository $userRepository, LoggerInterface $logger)
     {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
-        $this->zoomOauthStorage = $zoomOauthStorage;
+        $this->userRepository = $userRepository;
     }
 
     public function __invoke(RequestInterface $request, ResponseInterface $response, $args)
@@ -60,13 +67,21 @@ class OauthRequestHandler
                 'code' => $_GET['code'],
             ]);
             $owner = $this->oauthProvider->getResourceOwner($accessToken);
-            $this->zoomOauthStorage->save($owner->getId(), $accessToken);
+            /** @var Helper $session */
+            $session = $request->getAttribute('session');
+            $user = $this->userRepository->findById($session->get('userid'));
+            $user->setZoomUserid($owner->getId());
+            $user->setZoomAccessToken($accessToken);
+            $this->userRepository->update($user);
 
             $response->getBody()->write('All ok!');
-
             return $response;
+        } catch (UserNotFoundException $e) {
+            throw new HttpForbiddenException($request, 'Please authorize via slack first');
         } catch (IdentityProviderException $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());
+        } catch(PDOException $e) {
+            $this->logger->error('Database unreachable', ['exception' => $e]);
         } catch (Exception $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());
         }
