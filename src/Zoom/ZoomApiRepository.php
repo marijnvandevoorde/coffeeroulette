@@ -4,7 +4,7 @@
 namespace Teamleader\Zoomroulette\Zoom;
 
 
-use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
@@ -25,7 +25,7 @@ class ZoomApiRepository
         $this->logger = $logger;
     }
 
-    public function createMeeting(string $zoomUserId, AccessToken $accessToken) : string
+    public function createMeeting(string $zoomUserId, AccessTokenInterface $accessToken) : string
     {
         $payload = [
             'topic' => 'Zoom roulette baby!',

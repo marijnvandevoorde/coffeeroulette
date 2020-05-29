@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Teamleader\Zoomroulette\Zoom\ZoomApiRepository;
+use Teamleader\Zoomroulette\Zoomroulette\User;
 use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
 
 class SpinCommandHandler
@@ -61,7 +62,10 @@ class SpinCommandHandler
             'args' => $args,
             'body' => $body
         ]);
-        $zoomMeetingId = $this->userRepository->findBySsoId('slack', $body['user_id']);
+        /** @var User $user */
+        $user = $this->userRepository->findBySsoId('slack', $body['user_id']);
+        $this->logger->debug('slash command for user', ['user' => $user]);
+        $zoomMeetingId = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
         $this->logger->debug($zoomMeetingId);
         return $response->withBody($zoomMeetingId);
     }
