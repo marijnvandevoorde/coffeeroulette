@@ -5,6 +5,8 @@ namespace Teamleader\Zoomroulette\Slack;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Teamleader\Zoomroulette\Zoom\ZoomApiRepository;
+use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
 
 class SpinCommandHandler
 {
@@ -19,15 +21,20 @@ class SpinCommandHandler
     private LoggerInterface $logger;
 
     /**
-     * @var SlackOauthStorage
+     * @var UserRepository
      */
-    private SlackOauthStorage $slackOauthStorage;
+    private UserRepository $userRepository;
+    /**
+     * @var ZoomApiRepository
+     */
+    private ZoomApiRepository $zoomApiRepository;
 
-    public function __construct(OauthProvider $oauthProvider, SlackOauthStorage $slackOauthStorage,  LoggerInterface $logger)
+    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository,  LoggerInterface $logger, ZoomApiRepository $zoomApiRepository)
     {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
-        $this->slackOauthStorage = $slackOauthStorage;
+        $this->userRepository = $userRepository;
+        $this->zoomApiRepository = $zoomApiRepository;
     }
 
 
@@ -49,12 +56,13 @@ class SpinCommandHandler
          * "response_url":"https://hooks.slack.com/commands/T00000001/1000000000002/TESTRESPONSESECRET2",
          * "trigger_id":"1000000000002.1000000000000.testtrigger2"}}
          */
+        $body = $request->getParsedBody();
         $this->logger->debug("slash command received", [
             'args' => $args,
-            'isarray' => '' . is_array($request->getParsedBody()),
-            'type' => get_class($request->getParsedBody()),
-            'body' => $request->getParsedBody()
+            'body' => $body
         ]);
-        $this->logger->debug($request->getParsedBody()['command']);
+        $zoomMeetingId = $this->userRepository->findBySsoId('slack', $body['user_id']);
+        $this->logger->debug($zoomMeetingId);
+        return $response->withBody($zoomMeetingId);
     }
 }
