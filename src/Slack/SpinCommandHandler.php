@@ -67,6 +67,6 @@ class SpinCommandHandler
         $this->logger->debug('slash command for user', ['user' => $user]);
         $zoomMeetingId = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
         $this->logger->debug($zoomMeetingId);
-        return $response->withBody($zoomMeetingId);
+        return $response->getBody()->write($zoomMeetingId);
     }
 }
