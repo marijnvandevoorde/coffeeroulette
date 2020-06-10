@@ -110,6 +110,6 @@ class SpinCommandHandler
 }', [$meeting->getStartMeetingUrl()]);
 
         $response->getBody()->write($body);
-        return $response;
+        return $response->withHeader('Content-type', 'application/json');
     }
 }
