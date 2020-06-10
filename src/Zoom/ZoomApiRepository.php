@@ -25,7 +25,7 @@ class ZoomApiRepository
         $this->logger = $logger;
     }
 
-    public function createMeeting(string $zoomUserId, AccessTokenInterface $accessToken) : string
+    public function createMeeting(string $zoomUserId, AccessTokenInterface $accessToken) : ZoomMeeting
     {
         $payload = [
             'topic' => 'Zoom roulette baby!',
@@ -50,8 +50,11 @@ class ZoomApiRepository
         );
         /** @var ResponseInterface $response */
         $createMeetingResponse = $this->oauthProvider->getResponse($request);
-        $this->logger->debug("received response", ['headers' => $createMeetingResponse->getHeaders(), 'body' => $createMeetingResponse->getBody()->getContents()]);
-        return $createMeetingResponse->getBody()->getContents();
+        $data = json_decode($createMeetingResponse->getBody()->getContents());
+        return new ZoomMeeting(
+            $data->start_url,
+            $data->join_url
+        );
     }
 
 }
