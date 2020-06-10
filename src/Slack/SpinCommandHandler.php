@@ -94,7 +94,7 @@ class SpinCommandHandler
         $this->logger->debug('slash command for user', ['user' => $user]);
         $meeting = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
 
-        $body = sprintf('{
+        $privateBody = sprintf('{
 	"blocks": [
 		{
 			"type": "section",
@@ -114,7 +114,7 @@ class SpinCommandHandler
 	]
 }', $meeting->getStartMeetingUrl());
 
-        $guestBody =  $body = sprintf('{
+        $guestBody = sprintf('{
 	"blocks": [
 		{
             "response_type": "in_channel",
@@ -140,7 +140,7 @@ class SpinCommandHandler
         $this->logger->debug($meeting->getStartMeetingUrl());
         $this->logger->debug($meeting->getJoinMeetingUrl());
 
-        $response->getBody()->write($body);
+        $response->getBody()->write($privateBody);
         return $response->withHeader('Content-type', 'application/json');
     }
 }
