@@ -34,14 +34,19 @@ class SpinCommandHandler
      * @var ZoomOauthProviderAlias
      */
     private ZoomOauthProviderAlias $zoomOauthProvider;
+    /**
+     * @var SlackApiRepository
+     */
+    private SlackApiRepository $slackApiRepository;
 
-    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository,  LoggerInterface $logger, ZoomApiRepository $zoomApiRepository, ZoomOauthProviderAlias $zoomOauthProvider)
+    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository,  LoggerInterface $logger, ZoomApiRepository $zoomApiRepository, ZoomOauthProviderAlias $zoomOauthProvider, SlackApiRepository $slackApiRepository)
     {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
         $this->userRepository = $userRepository;
         $this->zoomApiRepository = $zoomApiRepository;
         $this->zoomOauthProvider = $zoomOauthProvider;
+        $this->slackApiRepository = $slackApiRepository;
     }
 
 
@@ -108,6 +113,29 @@ class SpinCommandHandler
 		}
 	]
 }', $meeting->getStartMeetingUrl());
+
+        $guestBody =  $body = sprintf('{
+	"blocks": [
+		{
+            "response_type": "in_channel",
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Ooooh, someone spun the zoom roulette! Act fast, think later!"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": "Jump in!"
+				},
+				"url": "%s"
+			}
+		}
+	]
+}', $meeting->getJoinMeetingUrl());
+
+        $this->slackApiRepository->post($body['response_url'], $guestBody, $user->getSsoAccessToken());
 
         $this->logger->debug($meeting->getStartMeetingUrl());
         $this->logger->debug($meeting->getJoinMeetingUrl());
