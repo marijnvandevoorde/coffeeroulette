@@ -115,9 +115,9 @@ class SpinCommandHandler
 }', $meeting->getStartMeetingUrl());
 
         $guestBody = sprintf('{
+    "response_type": "in_channel",
 	"blocks": [
 		{
-            "response_type": "in_channel",
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
