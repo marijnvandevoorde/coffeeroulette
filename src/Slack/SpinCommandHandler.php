@@ -89,7 +89,7 @@ class SpinCommandHandler
         $this->logger->debug('slash command for user', ['user' => $user]);
         $meeting = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
 
-        $response = sprintf('{
+        $body = sprintf('{
 	"blocks": [
 		{
 			"type": "section",
@@ -109,7 +109,7 @@ class SpinCommandHandler
 	]
 }', [$meeting->getStartMeetingUrl()]);
 
-        $response->getBody()->write($response);
+        $response->getBody()->write($body);
         return $response;
     }
 }
