@@ -78,7 +78,7 @@ class SpinCommandHandler
             $this->userRepository->update($user);
 
         }
-        if ($user->getSsoAccessToken()->hasExpired()) {
+        if ($user->getSsoAccessToken()->getExpires() && $user->getZoomAccessToken()->hasExpired()) {
             $newAccessToken = $this->oauthProvider->getAccessToken('refresh_token', [
                 'refresh_token' => $user->getSsoAccessToken()->getRefreshToken()
             ]);
