@@ -87,9 +87,29 @@ class SpinCommandHandler
 
         }
         $this->logger->debug('slash command for user', ['user' => $user]);
-        $zoomMeetingId = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
-        $this->logger->debug($zoomMeetingId);
-        $response->getBody()->write($zoomMeetingId);
+        $meeting = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
+
+        $response = sprintf('{
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "The roulette is spinning! Don\'t leave your mystery date hanging"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": "Start the meeting"
+				},
+				"url": "%s"
+			}
+		}
+	]
+}', [$meeting->getStartMeetingUrl()]);
+
+        $response->getBody()->write($response);
         return $response;
     }
 }
