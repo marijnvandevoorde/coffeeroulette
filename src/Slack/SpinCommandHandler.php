@@ -103,11 +103,13 @@ class SpinCommandHandler
 					"type": "plain_text",
 					"text": "Start the meeting"
 				},
-				"url": "https://www.google.com"
+				"url": "%s"
 			}
 		}
 	]
 }', [$meeting->getStartMeetingUrl()]);
+
+        $this->logger->debug("meeting url", ['meeting_url' => $meeting->getStartMeetingUrl()]);
 
         $response->getBody()->write($body);
         return $response->withHeader('Content-type', 'application/json');
