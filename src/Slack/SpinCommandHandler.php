@@ -129,7 +129,7 @@ class SpinCommandHandler
 					"type": "plain_text",
 					"text": "Jump in!"
 				},
-				"url": "https://www.google.com"
+				"url": "%s"
 			}
 		}
 	]
