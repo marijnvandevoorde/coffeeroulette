@@ -5,6 +5,7 @@ namespace Teamleader\Zoomroulette\Slack;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
 use Teamleader\Zoomroulette\Zoom\ZoomApiRepository;
 use Teamleader\Zoomroulette\Zoomroulette\User;
 use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
@@ -29,13 +30,18 @@ class SpinCommandHandler
      * @var ZoomApiRepository
      */
     private ZoomApiRepository $zoomApiRepository;
+    /**
+     * @var ZoomOauthProviderAlias
+     */
+    private ZoomOauthProviderAlias $zoomOauthProvider;
 
-    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository,  LoggerInterface $logger, ZoomApiRepository $zoomApiRepository)
+    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository,  LoggerInterface $logger, ZoomApiRepository $zoomApiRepository, ZoomOauthProviderAlias $zoomOauthProvider)
     {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
         $this->userRepository = $userRepository;
         $this->zoomApiRepository = $zoomApiRepository;
+        $this->zoomOauthProvider = $zoomOauthProvider;
     }
 
 
@@ -64,6 +70,22 @@ class SpinCommandHandler
         ]);
         /** @var User $user */
         $user = $this->userRepository->findBySsoId('slack', $body['user_id']);
+        if ($user->getZoomAccessToken()->hasExpired()) {
+            $newAccessToken = $this->zoomOauthProvider->getAccessToken('refresh_token', [
+                'refresh_token' => $user->getZoomAccessToken()->getRefreshToken()
+            ]);
+            $user->setZoomAccessToken($newAccessToken);
+            $this->userRepository->update($user);
+
+        }
+        if ($user->getSsoAccessToken()->hasExpired()) {
+            $newAccessToken = $this->oauthProvider->getAccessToken('refresh_token', [
+                'refresh_token' => $user->getSsoAccessToken()->getRefreshToken()
+            ]);
+            $user->setSsoAccessToken($newAccessToken);
+            $this->userRepository->update($user);
+
+        }
         $this->logger->debug('slash command for user', ['user' => $user]);
         $zoomMeetingId = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
         $this->logger->debug($zoomMeetingId);
