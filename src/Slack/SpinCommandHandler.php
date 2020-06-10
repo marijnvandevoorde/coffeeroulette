@@ -103,7 +103,7 @@ class SpinCommandHandler
 					"type": "plain_text",
 					"text": "Start the meeting"
 				},
-				"url": "%s"
+				"url": "https://www.google.com"
 			}
 		}
 	]
