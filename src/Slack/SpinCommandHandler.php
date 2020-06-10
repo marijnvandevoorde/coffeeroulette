@@ -107,9 +107,10 @@ class SpinCommandHandler
 			}
 		}
 	]
-}', [$meeting->getStartMeetingUrl()]);
+}', $meeting->getStartMeetingUrl());
 
-        $this->logger->debug("meeting url", ['meeting_url' => $meeting->getStartMeetingUrl()]);
+        $this->logger->debug($meeting->getStartMeetingUrl());
+        $this->logger->debug($meeting->getJoinMeetingUrl());
 
         $response->getBody()->write($body);
         return $response->withHeader('Content-type', 'application/json');
