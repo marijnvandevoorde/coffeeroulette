@@ -22,7 +22,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $container = new Container();
 
 $container->share('settings', fn () => [
-    'displayErrorDetails' => getenv('DISPLAY_ERROR_DETAILS') !== 'true',
+    'displayErrorDetails' => getenv('DISPLAY_ERROR_DETAILS') === 'true',
 ]);
 
 $container->share(SessionMiddleware::class, fn () => new SessionMiddleware([
