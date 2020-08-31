@@ -15,38 +15,21 @@ use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
 
 class SpinCommandHandler
 {
-    /**
-     * @var OauthProvider
-     */
     private OauthProvider $oauthProvider;
 
-    /**
-     * @var LoggerInterface
-     */
     private LoggerInterface $logger;
 
-    /**
-     * @var UserRepository
-     */
     private UserRepository $userRepository;
-    /**
-     * @var ZoomApiRepository
-     */
+
     private ZoomApiRepository $zoomApiRepository;
-    /**
-     * @var ZoomOauthProviderAlias
-     */
+
     private ZoomOauthProviderAlias $zoomOauthProvider;
-    /**
-     * @var SlackApiRepository
-     */
+
     private SlackApiRepository $slackApiRepository;
-    /**
-     * @var SpinRepository
-     */
+
     private SpinRepository $spinRepository;
 
-    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository, SpinRepository  $spinRepository,  LoggerInterface $logger, ZoomApiRepository $zoomApiRepository, ZoomOauthProviderAlias $zoomOauthProvider, SlackApiRepository $slackApiRepository)
+    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository, SpinRepository $spinRepository, LoggerInterface $logger, ZoomApiRepository $zoomApiRepository, ZoomOauthProviderAlias $zoomOauthProvider, SlackApiRepository $slackApiRepository)
     {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
@@ -57,11 +40,10 @@ class SpinCommandHandler
         $this->spinRepository = $spinRepository;
     }
 
-
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $body = $request->getParsedBody();
-        $this->logger->debug("slash command received", [
+        $this->logger->debug('slash command received', [
             'command' => $body['command'],
             'text' => $body['text'],
         ]);
@@ -93,23 +75,22 @@ class SpinCommandHandler
             }', $_ENV['ROOT_URL'] . '/auth/slack');
 
             $response->getBody()->write($privateBody);
+
             return $response->withHeader('Content-type', 'application/json');
         }
         if ($user->getZoomAccessToken()->hasExpired()) {
             $newAccessToken = $this->zoomOauthProvider->getAccessToken('refresh_token', [
-                'refresh_token' => $user->getZoomAccessToken()->getRefreshToken()
+                'refresh_token' => $user->getZoomAccessToken()->getRefreshToken(),
             ]);
             $user->setZoomAccessToken($newAccessToken);
             $this->userRepository->update($user);
-
         }
         if ($user->getSsoAccessToken()->getExpires() && $user->getZoomAccessToken()->hasExpired()) {
             $newAccessToken = $this->oauthProvider->getAccessToken('refresh_token', [
-                'refresh_token' => $user->getSsoAccessToken()->getRefreshToken()
+                'refresh_token' => $user->getSsoAccessToken()->getRefreshToken(),
             ]);
             $user->setSsoAccessToken($newAccessToken);
             $this->userRepository->update($user);
-
         }
         $this->logger->debug('slash command for user', ['user' => $user]);
         $meeting = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
@@ -134,13 +115,13 @@ class SpinCommandHandler
             ]
         }', $meeting->getStartMeetingUrl());
 
-
-        $spots = empty($body['text']) ? 1 : ( intval($body['text']) ? intval($body['text']) : 1);
+        $spots = empty($body['text']) ? 1 : (intval($body['text']) ? intval($body['text']) : 1);
 
         $spin = new Spin($meeting->getJoinMeetingUrl(), $spots);
         $spin = $this->spinRepository->add($spin);
 
-        $guestBody = sprintf('{
+        $guestBody = sprintf(
+            '{
                 "response_type": "in_channel",
                 "blocks": [
                     {
@@ -159,7 +140,8 @@ class SpinCommandHandler
                         }
                     }
                 ]
-            }', $_ENV['ROOT_URL'] . '/join/ ' . $spin->getUuid()
+            }',
+            $_ENV['ROOT_URL'] . '/join/ ' . $spin->getUuid()
         );
 
         $this->slackApiRepository->post($body['response_url'], $guestBody, $user->getSsoAccessToken());
@@ -168,6 +150,7 @@ class SpinCommandHandler
         $this->logger->debug($meeting->getJoinMeetingUrl());
 
         $response->getBody()->write($privateBody);
+
         return $response->withHeader('Content-type', 'application/json');
     }
 }

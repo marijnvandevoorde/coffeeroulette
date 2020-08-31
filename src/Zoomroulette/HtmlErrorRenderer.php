@@ -9,9 +9,6 @@ use Throwable;
 
 class HtmlErrorRenderer extends SlimHtmlErrorRenderer
 {
-    /**
-     * @var Twig
-     */
     private Twig $view;
 
     public function __construct(Twig $view)
