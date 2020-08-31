@@ -5,7 +5,6 @@ use Psr\Log\LoggerInterface;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Views\Twig;
-use Slim\Views\TwigMiddleware;
 use Teamleader\Zoomroulette\Slack\OauthRequestHandler as SlackOauthRequestHandler;
 use Teamleader\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
 use Teamleader\Zoomroulette\Slack\SpinCommandHandler;
