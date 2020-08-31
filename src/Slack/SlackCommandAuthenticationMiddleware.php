@@ -3,6 +3,7 @@
 namespace Teamleader\Zoomroulette\Slack;
 
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Log\LoggerInterface;
@@ -32,13 +33,14 @@ class SlackCommandAuthenticationMiddleware
      * @throws HttpUnauthorizedException
      */
     public function __invoke(
-        Request $request,
+        ServerRequestInterface $request,
         RequestHandler $handler
     ): Response {
-        /*if (!isset($request->getParsedBody()['token'])) {
-            throw new HttpUnauthorizedException($request, "No token found");
-        }*/
-        $body = $request->getBody()->getContents();
+        $body = $request->getParsedBody();
+        $this->logger->debug("slack command auth", [
+            'headers' => $request->getHeaders(),
+            'body' => $body,
+        ]);
         if (empty($timestamp = $request->getHeader('X-Slack-Request-Timestamp')) || empty($signature = $request->getHeader('X-Slack-Signature'))) {
             throw new HttpBadRequestException($request, 'No timestap or signature header passed');
         }
