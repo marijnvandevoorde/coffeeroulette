@@ -51,6 +51,11 @@ class SlackCommandAuthenticationMiddleware
             'v0=' . hash_hmac('sha256', 'v0:' . $timestamp[0] . ':' . $body, $this->secret),
             $signature[0]
         )) {
+            $this->logger->debug("slack command auth", [
+                'header' => $timestamp,
+                'secret' => $this->secret,
+                'sign' => $signature,
+            ]);
             throw new HttpUnauthorizedException($request, 'signature seems invalid');
         }
 
