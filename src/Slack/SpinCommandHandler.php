@@ -144,7 +144,7 @@ class SpinCommandHandler
             $_ENV['ROOT_URL'] . '/join/ ' . $spin->getUuid()
         );
 
-        $this->debug('guestbody', ['body' => $guestBody]);
+        $this->logger->debug('guestbody', ['body' => $guestBody]);
 
         $this->slackApiRepository->post($body['response_url'], $guestBody, $user->getSsoAccessToken());
 
