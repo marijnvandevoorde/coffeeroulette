@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
+use Slim\Views\Twig;
 use Slim\Views\TwigMiddleware;
 use Teamleader\Zoomroulette\Slack\OauthRequestHandler as SlackOauthRequestHandler;
 use Teamleader\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
@@ -34,6 +35,14 @@ if (!$container->get('settings')['displayErrorDetails']) {
     $errorHandler->registerErrorRenderer('text/html', HtmlErrorRenderer::class);
 }
 
+$app->any('/', function (Request $request, Response $response, $args) use ($container) {
+    /** @var Twig $twig */
+    $twig = $container->get(Twig::class);
+    $response->getBody()->write($twig->getEnvironment()->render('landing.html', []));
+    return $response;
+
+}); //->add(TwigMiddleware::create($app, $container->get(\Slim\Views\Twig::class)));
+
 
 $app->get('/join/{id}', JoinCallHandler::class);
 
@@ -54,8 +63,5 @@ $app->group('/slack', function (RouteCollectorProxy $group) {
    $group->post('/spin', SpinCommandHandler::class);
 })->add($container->get(SlackCommandAuthenticationMiddleware::class));
 
-
-
-$app->add(TwigMiddleware::create($app, $container->get(\Slim\Views\Twig::class)));
 
 $app->run();
