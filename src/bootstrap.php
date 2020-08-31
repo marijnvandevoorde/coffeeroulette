@@ -13,7 +13,6 @@ use Teamleader\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
 use Teamleader\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
 use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
 use Teamleader\Zoomroulette\Zoomroulette\SessionMiddleware;
-use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
