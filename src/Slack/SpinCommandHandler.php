@@ -141,7 +141,7 @@ class SpinCommandHandler
                     }
                 ]
             }',
-            $_ENV['ROOT_URL'] . '/join/ ' . $spin->getUuid()
+            $_ENV['ROOT_URL'] . '/join/' . $spin->getUuid()
         );
 
         $this->logger->debug('guestbody', ['body' => $guestBody]);
