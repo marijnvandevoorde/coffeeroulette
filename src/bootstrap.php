@@ -7,7 +7,6 @@ use League\Container\ReflectionContainer;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Slim\Middleware\Session;
 use Slim\Views\Twig;
 use SlimSession\Helper;
 use Teamleader\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
@@ -36,9 +35,8 @@ $container->share(SlackCommandAuthenticationMiddleware::class, fn () => new Slac
     $container->get(LoggerInterface::class)
 ));
 
-$container->share(Connection::class, fn () =>
-     DriverManager::getConnection([
-         'url' => getenv('DATABASE_URL')
+$container->share(Connection::class, fn () => DriverManager::getConnection([
+    'url' => getenv('DATABASE_URL'),
 ]));
 
 // register the reflection container as a delegate to enable auto wiring

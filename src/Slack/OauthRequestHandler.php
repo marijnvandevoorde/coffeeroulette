@@ -3,7 +3,6 @@
 namespace Teamleader\Zoomroulette\Slack;
 
 use Exception;
-use GuzzleHttp\Psr7\Response;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,12 +24,9 @@ class OauthRequestHandler
      */
     private $logger;
 
-    /**
-     * @var UserRepository
-     */
     private UserRepository $userRepository;
 
-    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository,  LoggerInterface $logger)
+    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository, LoggerInterface $logger)
     {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
@@ -52,7 +48,7 @@ class OauthRequestHandler
             return $response->withHeader('Location', $authorizationUrl)->withStatus(302);
         }
         /** @var Helper $session */
-        $session =  $request->getAttribute('session');
+        $session = $request->getAttribute('session');
 
         if (empty($_GET['state']) || $session->exists('oauht2state') && $_GET['state'] !== $session->get('oauth2state')) {
             if ($session->exists('oauht2state')) {
@@ -60,6 +56,7 @@ class OauthRequestHandler
             }
 
             $response->getBody()->write('Something went wrong, try again <a href="/auth/slack">here</a>');
+
             return $response->withStatus(400, 'Invalid state');
         }
 
@@ -68,24 +65,26 @@ class OauthRequestHandler
             $accessToken = $this->oauthProvider->getAccessToken('authorization_code', [
                 'code' => $_GET['code'],
             ]);
+
             try {
                 $user = $this->userRepository->findBySsoId('slack', $accessToken->getValues()['authed_user']['id']);
                 $user->setSsoAccessToken($accessToken);
                 $this->userRepository->update($user);
                 $request->getAttribute('session')->set('userid', $user->getId());
                 $response->getBody()->write('All ok! Now be sure to also authenticate <a href="/auth/zoom">zoom</a>');
+
                 return $response;
             } catch (UserNotFoundException $e) {
                 $user = new User('slack', $accessToken->getValues()['authed_user']['id'], $accessToken);
                 $user = $this->userRepository->add($user);
                 $request->getAttribute('session')->set('userid', $user->getId());
                 $response->getBody()->write('All ok! Now be sure to also authenticate <a href="/auth/zoom">zoom</a>');
+
                 return $response;
             }
         } catch (IdentityProviderException $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());
             $response->getBody()->write('Something went wrong, try again <a href="/auth/slack">here</a>');
-
 
             return $response->withStatus(400, $e->getMessage());
         } catch (Exception $e) {

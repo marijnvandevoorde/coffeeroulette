@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Teamleader\Zoomroulette\Zoom;
-
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -10,13 +8,8 @@ use Psr\Log\LoggerInterface;
 
 class ZoomApiRepository
 {
-    /**
-     * @var OauthProvider
-     */
     private OauthProvider $oauthProvider;
-    /**
-     * @var LoggerInterface
-     */
+
     private LoggerInterface $logger;
 
     public function __construct(OauthProvider $oauthProvider, LoggerInterface $logger)
@@ -25,7 +18,7 @@ class ZoomApiRepository
         $this->logger = $logger;
     }
 
-    public function createMeeting(string $zoomUserId, AccessTokenInterface $accessToken) : ZoomMeeting
+    public function createMeeting(string $zoomUserId, AccessTokenInterface $accessToken): ZoomMeeting
     {
         $payload = [
             'topic' => 'Zoom roulette baby!',
@@ -52,10 +45,10 @@ class ZoomApiRepository
         $createMeetingResponse = $this->oauthProvider->getResponse($request);
         $data = json_decode($createMeetingResponse->getBody()->getContents(), true);
         $this->logger->debug($data['start_url']);
+
         return new ZoomMeeting(
             $data['start_url'],
             $data['join_url']
         );
     }
-
 }

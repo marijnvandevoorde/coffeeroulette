@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Teamleader\Zoomroulette\Slack;
-
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -11,13 +9,8 @@ use Teamleader\Zoomroulette\Slack\OauthProvider as OauthProviderAlias;
 
 class SlackApiRepository
 {
-    /**
-     * @var OauthProvider
-     */
     private OauthProvider $oauthProvider;
-    /**
-     * @var LoggerInterface
-     */
+
     private LoggerInterface $logger;
 
     public function __construct(OauthProviderAlias $oauthProvider, LoggerInterface $logger)
@@ -26,11 +19,11 @@ class SlackApiRepository
         $this->logger = $logger;
     }
 
-
-    public function post(string $url, string $body, AccessTokenInterface $accessToken) {
-        $this->logger->debug("post", [
-           'url' => $url,
-           'body' => $body
+    public function post(string $url, string $body, AccessTokenInterface $accessToken)
+    {
+        $this->logger->debug('post', [
+            'url' => $url,
+            'body' => $body,
         ]);
         $request = $this->oauthProvider->getAuthenticatedRequest(
             'POST',
@@ -45,11 +38,11 @@ class SlackApiRepository
         );
         /** @var ResponseInterface $response */
         $createMeetingResponse = $this->oauthProvider->getResponse($request);
+
         return $createMeetingResponse;
     }
 
-
-    public function postEphemeral(string $channelId, string $message, AccessTokenInterface $accessToken) : string
+    public function postEphemeral(string $channelId, string $message, AccessTokenInterface $accessToken): string
     {
         $payload = [
             'topic' => 'Zoom roulette baby!',
@@ -74,8 +67,8 @@ class SlackApiRepository
         );
         /** @var ResponseInterface $response */
         $createMeetingResponse = $this->oauthProvider->getResponse($request);
-        $this->logger->debug("received response", ['headers' => $createMeetingResponse->getHeaders(), 'body' => $createMeetingResponse->getBody()->getContents()]);
+        $this->logger->debug('received response', ['headers' => $createMeetingResponse->getHeaders(), 'body' => $createMeetingResponse->getBody()->getContents()]);
+
         return $createMeetingResponse->getBody()->getContents();
     }
-
 }

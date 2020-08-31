@@ -18,9 +18,6 @@ class MeetingTestRequestHandler
      */
     private $logger;
 
-    /**
-     * @var SlackOauthStorage
-     */
     private SlackOauthStorage $zoomOauthStorage;
 
     public function __construct(

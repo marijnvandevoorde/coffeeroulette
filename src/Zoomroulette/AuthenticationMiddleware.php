@@ -10,7 +10,6 @@ use SlimSession\Helper;
 
 class AuthenticationMiddleware
 {
-
     public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /** @var Helper $session */

@@ -10,7 +10,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpForbiddenException;
 use SlimSession\Helper;
-use Teamleader\Zoomroulette\Zoomroulette\User;
 use Teamleader\Zoomroulette\Zoomroulette\UserNotFoundException;
 use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
 
@@ -26,13 +25,13 @@ class OauthRequestHandler
      */
     private $logger;
 
-    /**
-     * @var UserRepository
-     */
     private UserRepository $userRepository;
 
-    public function __construct(OauthProvider $oauthProvider,
-        UserRepository $userRepository, LoggerInterface $logger)
+    public function __construct(
+        OauthProvider $oauthProvider,
+        UserRepository $userRepository,
+        LoggerInterface $logger
+    )
     {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
@@ -75,12 +74,13 @@ class OauthRequestHandler
             $this->userRepository->update($user);
 
             $response->getBody()->write('All ok!');
+
             return $response;
         } catch (UserNotFoundException $e) {
             throw new HttpForbiddenException($request, 'Please authorize via slack first');
         } catch (IdentityProviderException $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             $this->logger->error('Database unreachable', ['exception' => $e]);
         } catch (Exception $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());

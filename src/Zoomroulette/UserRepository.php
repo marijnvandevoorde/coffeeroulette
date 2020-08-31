@@ -1,19 +1,13 @@
 <?php
 
-
 namespace Teamleader\Zoomroulette\Zoomroulette;
-
 
 use Doctrine\DBAL\Connection;
 
 class UserRepository
 {
-
     const TABLE_NAME = 'users';
 
-    /**
-     * @var Connection
-     */
     private Connection $connection;
 
     public function __construct(Connection $connection)
@@ -21,7 +15,8 @@ class UserRepository
         $this->connection = $connection;
     }
 
-    public function add(User $user) : User {
+    public function add(User $user): User
+    {
         $this->connection->insert(
             self::TABLE_NAME,
             [
@@ -29,15 +24,16 @@ class UserRepository
                 'sso_userid' => $user->getSsoUserId(),
                 'sso_credentials' => json_encode($user->getSsoAccessToken()),
                 'zoom_userid' => $user->getZoomUserid(),
-                'zoom_credentials' => json_encode($user->getZoomAccessToken())
+                'zoom_credentials' => json_encode($user->getZoomAccessToken()),
             ]
         );
         $user->setId($this->connection->lastInsertId());
-        return $user;
 
+        return $user;
     }
 
-    public function update(User $user) : void {
+    public function update(User $user): void
+    {
         $this->connection->update(
             self::TABLE_NAME,
             [
@@ -45,16 +41,16 @@ class UserRepository
                 'sso_userid' => $user->getSsoUserId(),
                 'sso_credentials' => json_encode($user->getSsoAccessToken()),
                 'zoom_userid' => $user->getZoomUserId(),
-                'zoom_credentials' => json_encode($user->getZoomAccessToken())
+                'zoom_credentials' => json_encode($user->getZoomAccessToken()),
             ],
             [
                 'id' => $user->getId(),
             ]
         );
-
     }
 
-    public function findById(int $id) : User {
+    public function findById(int $id): User
+    {
         $query = $this->connection->createQueryBuilder();
         $result = $query->select('*')
             ->from(self::TABLE_NAME)
@@ -64,13 +60,14 @@ class UserRepository
 
         $row = $result->fetch();
         if (!$row) {
-            throw new UserNotFoundException("No user by this id");
+            throw new UserNotFoundException('No user by this id');
         }
 
         return User::withSqlRecord($row);
     }
 
-    public function findBySsoId(string $ssoPlatform, string $ssoUserId) : User {
+    public function findBySsoId(string $ssoPlatform, string $ssoUserId): User
+    {
         $query = $this->connection->createQueryBuilder();
         $result = $query->select('*')
             ->from(self::TABLE_NAME)
@@ -82,10 +79,9 @@ class UserRepository
 
         $row = $result->fetch();
         if (!$row) {
-            throw new UserNotFoundException("No user by this id");
+            throw new UserNotFoundException('No user by this id');
         }
 
         return User::withSqlRecord($row);
     }
-
 }
