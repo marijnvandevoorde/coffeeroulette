@@ -77,5 +77,3 @@ $container->share(LoggerInterface::class, function () {
 
     return $log;
 });
-
-$container->share(UserRepository::class, fn () => new UserRepository(__DIR__ . '/../storage/'));
