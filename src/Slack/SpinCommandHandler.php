@@ -7,7 +7,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
 use Teamleader\Zoomroulette\Zoom\ZoomApiRepository;
+use Teamleader\Zoomroulette\Zoomroulette\Spin;
+use Teamleader\Zoomroulette\Zoomroulette\SpinRepository;
 use Teamleader\Zoomroulette\Zoomroulette\User;
+use Teamleader\Zoomroulette\Zoomroulette\UserNotFoundException;
 use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
 
 class SpinCommandHandler
@@ -38,8 +41,12 @@ class SpinCommandHandler
      * @var SlackApiRepository
      */
     private SlackApiRepository $slackApiRepository;
+    /**
+     * @var SpinRepository
+     */
+    private SpinRepository $spinRepository;
 
-    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository,  LoggerInterface $logger, ZoomApiRepository $zoomApiRepository, ZoomOauthProviderAlias $zoomOauthProvider, SlackApiRepository $slackApiRepository)
+    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository, SpinRepository  $spinRepository,  LoggerInterface $logger, ZoomApiRepository $zoomApiRepository, ZoomOauthProviderAlias $zoomOauthProvider, SlackApiRepository $slackApiRepository)
     {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
@@ -47,34 +54,47 @@ class SpinCommandHandler
         $this->zoomApiRepository = $zoomApiRepository;
         $this->zoomOauthProvider = $zoomOauthProvider;
         $this->slackApiRepository = $slackApiRepository;
+        $this->spinRepository = $spinRepository;
     }
 
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        /**
-         * {"args":[],
-         * "body":
-         * {
-         * "token":"TESTTOKEN",
-         * "team_id":"T00000001",
-         * "team_domain":"exampleteam",
-         * "channel_id":"D00000001",
-         * "channel_name":"directmessage",
-         * "user_id":"U00000001",
-         * "user_name":"test.user",
-         * "command":"/zoomroulette",
-         * "text":"",
-         * "response_url":"https://hooks.slack.com/commands/T00000001/1000000000002/TESTRESPONSESECRET2",
-         * "trigger_id":"1000000000002.1000000000000.testtrigger2"}}
-         */
         $body = $request->getParsedBody();
         $this->logger->debug("slash command received", [
-            'args' => $args,
-            'body' => $body
+            'command' => $body['command'],
+            'text' => $body['text'],
         ]);
+
         /** @var User $user */
-        $user = $this->userRepository->findBySsoId('slack', $body['user_id']);
+        try {
+            $user = $this->userRepository->findBySsoId('slack', $body['user_id']);
+        } catch (UserNotFoundException $e) {
+            // No user, tell the one who called zoom
+
+            $privateBody = sprintf('{
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Please authorize your account first. "
+                        },
+                        "accessory": {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Authorize"
+                            },
+                            "url": "%s"
+                        }
+                    }
+                ]
+            }', $_ENV['ROOT_URL'] . '/auth/slack');
+
+            $response->getBody()->write($privateBody);
+            return $response->withHeader('Content-type', 'application/json');
+        }
         if ($user->getZoomAccessToken()->hasExpired()) {
             $newAccessToken = $this->zoomOauthProvider->getAccessToken('refresh_token', [
                 'refresh_token' => $user->getZoomAccessToken()->getRefreshToken()
@@ -95,45 +115,52 @@ class SpinCommandHandler
         $meeting = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
 
         $privateBody = sprintf('{
-	"blocks": [
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "The roulette is spinning! Don\'t leave your mystery date hanging"
-			},
-			"accessory": {
-				"type": "button",
-				"text": {
-					"type": "plain_text",
-					"text": "Start the meeting"
-				},
-				"url": "%s"
-			}
-		}
-	]
-}', $meeting->getStartMeetingUrl());
+            "blocks": [
+                {
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": "The roulette is spinning! Don\'t leave your mystery date hanging"
+                    },
+                    "accessory": {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Start the meeting"
+                        },
+                        "url": "%s"
+                    }
+                }
+            ]
+        }', $meeting->getStartMeetingUrl());
+
+
+        $spots = empty($body['text']) ? 1 : ( intval($body['text']) ? intval($body['text']) : 1);
+
+        $spin = new Spin($meeting->getJoinMeetingUrl(), $spots);
+        $spin = $this->spinRepository->add($spin);
 
         $guestBody = sprintf('{
-    "response_type": "in_channel",
-	"blocks": [
-		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "Ooooh, someone spun the zoom roulette! Act fast, think later!"
-			},
-			"accessory": {
-				"type": "button",
-				"text": {
-					"type": "plain_text",
-					"text": "Jump in!"
-				},
-				"url": "%s"
-			}
-		}
-	]
-}', $meeting->getJoinMeetingUrl());
+                "response_type": "in_channel",
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "Ooooh, someone spun the zoom roulette! Act fast, think later!"
+                        },
+                        "accessory": {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Jump in!"
+                            },
+                            "url": "%s"
+                        }
+                    }
+                ]
+            }', $_ENV['ROOT_URL'] . '/join/ ' . $spin->getUuid()
+        );
 
         $this->slackApiRepository->post($body['response_url'], $guestBody, $user->getSsoAccessToken());
 

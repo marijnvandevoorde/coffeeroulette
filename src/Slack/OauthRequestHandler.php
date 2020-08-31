@@ -3,6 +3,7 @@
 namespace Teamleader\Zoomroulette\Slack;
 
 use Exception;
+use GuzzleHttp\Psr7\Response;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -48,7 +49,7 @@ class OauthRequestHandler
 
             $request->getAttribute('session')->set('oauth2state', $this->oauthProvider->getState());
 
-            return $response->withHeader('Location', $authorizationUrl);
+            return $response->withHeader('Location', $authorizationUrl)->withStatus(302);
         }
         /** @var Helper $session */
         $session =  $request->getAttribute('session');
@@ -58,6 +59,7 @@ class OauthRequestHandler
                 $session->delete('oauth2state');
             }
 
+            $response->getBody()->write('Something went wrong, try again <a href="/auth/slack">here</a>');
             return $response->withStatus(400, 'Invalid state');
         }
 
@@ -71,21 +73,24 @@ class OauthRequestHandler
                 $user->setSsoAccessToken($accessToken);
                 $this->userRepository->update($user);
                 $request->getAttribute('session')->set('userid', $user->getId());
-                $response->getBody()->write('All ok!');
+                $response->getBody()->write('All ok! Now be sure to also authenticate <a href="/auth/zoom">zoom</a>');
                 return $response;
             } catch (UserNotFoundException $e) {
                 $user = new User('slack', $accessToken->getValues()['authed_user']['id'], $accessToken);
                 $user = $this->userRepository->add($user);
                 $request->getAttribute('session')->set('userid', $user->getId());
-                $response->getBody()->write('All ok!');
+                $response->getBody()->write('All ok! Now be sure to also authenticate <a href="/auth/zoom">zoom</a>');
                 return $response;
             }
         } catch (IdentityProviderException $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());
+            $response->getBody()->write('Something went wrong, try again <a href="/auth/slack">here</a>');
+
 
             return $response->withStatus(400, $e->getMessage());
         } catch (Exception $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());
+            $response->getBody()->write('Something went wrong, try again <a href="/auth/slack">here</a>');
 
             return $response->withStatus(400, $e->getMessage());
         }

@@ -14,6 +14,7 @@ use Teamleader\Zoomroulette\Zoomroulette\AuthenticationMiddleware;
 use Teamleader\Zoomroulette\Zoomroulette\ErrorHandler;
 use Teamleader\Zoomroulette\Zoomroulette\HtmlErrorRenderer;
 use Teamleader\Zoomroulette\Zoomroulette\SessionMiddleware;
+use Teamleader\Zoomroulette\Zoomroulette\JoinCallHandler;
 
 require __DIR__ . '/../src/bootstrap.php';
 
@@ -32,6 +33,9 @@ if (!$container->get('settings')['displayErrorDetails']) {
     $errorHandler = $errorMiddleware->getDefaultErrorHandler();
     $errorHandler->registerErrorRenderer('text/html', HtmlErrorRenderer::class);
 }
+
+
+$app->get('/join/{id}', JoinCallHandler::class);
 
 
 $app->group('/auth', function (RouteCollectorProxy $group) {
