@@ -44,8 +44,8 @@ class SlackCommandAuthenticationMiddleware
         if (empty($timestamp = $request->getHeader('X-Slack-Request-Timestamp')) || empty($signature = $request->getHeader('X-Slack-Signature'))) {
             throw new HttpBadRequestException($request, 'No timestap or signature header passed');
         }
-        if ($timestamp[0] < time() - 120) {
-            throw new HttpBadRequestException($request, sprintf('Timestap seems off: %s vs server time of %s', $timestamp[0], time()));
+        if (abs($timestamp[0] - time()) > 300) {
+            throw new HttpBadRequestException($request, sprintf('Timestamp seems off: %s vs server time of %s', $timestamp[0], time()));
         }
         if (!hash_equals(
             'v0=' . hash_hmac('sha256', 'v0:' . $timestamp[0] . ':' . $body, $this->secret),
@@ -55,6 +55,7 @@ class SlackCommandAuthenticationMiddleware
                 'header' => $timestamp,
                 'secret' => $this->secret,
                 'sign' => $signature,
+                'hash' => 'v0=' . hash_hmac('sha256', 'v0:' . $timestamp[0] . ':' . $body, $this->secret)
             ]);
             throw new HttpUnauthorizedException($request, 'signature seems invalid');
         }
