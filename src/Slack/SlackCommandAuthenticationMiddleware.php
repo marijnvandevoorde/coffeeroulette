@@ -36,7 +36,7 @@ class SlackCommandAuthenticationMiddleware
         ServerRequestInterface $request,
         RequestHandler $handler
     ): Response {
-        $body = $request->getParsedBody();
+        $body = $request->getBody()->getContents();
         $this->logger->debug("slack command auth", [
             'headers' => $request->getHeaders(),
             'body' => $body,
