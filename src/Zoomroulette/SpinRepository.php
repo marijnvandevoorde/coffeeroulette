@@ -73,7 +73,7 @@ class SpinRepository
 
         $row = $result->fetch();
         if (!$row) {
-            throw new SpinNotFoundException('No spin by id ' . $uuid->toString());
+            throw new SpinNotFoundException('No spin by id ' . $id);
         }
 
         return Spin::withSqlRecord($row);

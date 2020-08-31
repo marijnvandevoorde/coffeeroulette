@@ -36,7 +36,7 @@ class SlackApiRepository
                 ],
             ]
         );
-        /** @var ResponseInterface $response */
+        /** @var ResponseInterface $createMeetingResponse */
         $createMeetingResponse = $this->oauthProvider->getResponse($request);
 
         return $createMeetingResponse;
@@ -56,7 +56,7 @@ class SlackApiRepository
         ];
         $request = $this->oauthProvider->getAuthenticatedRequest(
             'POST',
-            sprintf('https://api.zoom.us/v2/users/%s/meetings', $zoomUserId),
+            sprintf('https://api.zoom.us/v2/users/%s/meetings', $channelId),
             $accessToken,
             [
                 'body' => json_encode($payload),
@@ -65,7 +65,7 @@ class SlackApiRepository
                 ],
             ]
         );
-        /** @var ResponseInterface $response */
+        /** @var ResponseInterface $createMeetingResponse */
         $createMeetingResponse = $this->oauthProvider->getResponse($request);
         $this->logger->debug('received response', ['headers' => $createMeetingResponse->getHeaders(), 'body' => $createMeetingResponse->getBody()->getContents()]);
 

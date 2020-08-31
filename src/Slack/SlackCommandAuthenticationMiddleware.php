@@ -43,7 +43,7 @@ class SlackCommandAuthenticationMiddleware
             throw new HttpBadRequestException($request, 'No timestap or signature header passed');
         }
         if ($timestamp[0] < time() - 120) {
-            throw new HttpBadRequestException($request, sprintf('Timestap seems off: %s vs server time of %s', [$timestamp[0], time()]));
+            throw new HttpBadRequestException($request, sprintf('Timestap seems off: %s vs server time of %s', $timestamp[0], time()));
         }
         if (!hash_equals(
             'v0=' . hash_hmac('sha256', 'v0:' . $timestamp[0] . ':' . $body, $this->secret),

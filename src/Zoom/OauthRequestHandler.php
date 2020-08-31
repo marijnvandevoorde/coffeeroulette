@@ -5,8 +5,8 @@ namespace Teamleader\Zoomroulette\Zoom;
 use Exception;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use PDOException;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpForbiddenException;
 use SlimSession\Helper;
@@ -31,14 +31,13 @@ class OauthRequestHandler
         OauthProvider $oauthProvider,
         UserRepository $userRepository,
         LoggerInterface $logger
-    )
-    {
+    ) {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
         $this->userRepository = $userRepository;
     }
 
-    public function __invoke(RequestInterface $request, ResponseInterface $response, $args)
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         if (!isset($_GET['code'])) {
             // Fetch the authorization URL from the provider; this returns the

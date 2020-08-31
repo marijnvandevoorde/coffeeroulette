@@ -11,10 +11,9 @@ use Slim\Views\Twig;
 use SlimSession\Helper;
 use Teamleader\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
 use Teamleader\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
-use Teamleader\Zoomroulette\Slack\SlackOauthStorage;
 use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
-use Teamleader\Zoomroulette\Zoom\UserRepository;
 use Teamleader\Zoomroulette\Zoomroulette\SessionMiddleware;
+use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -53,7 +52,7 @@ $container->share(ZoomOauthProviderAlias::class, fn () => new ZoomOauthProviderA
 
 $container->share(Helper::class, fn () => new Helper());
 
-$container->share(SlackOauthProvider::class, function () use ($container) {
+$container->share(SlackOauthProvider::class, function () {
     return new SlackOauthProvider([
         'clientId' => getenv('SLACK_CLIENTID'),
         'clientSecret' => getenv('SLACK_CLIENTSECRET'),
@@ -80,5 +79,3 @@ $container->share(LoggerInterface::class, function () {
 });
 
 $container->share(UserRepository::class, fn () => new UserRepository(__DIR__ . '/../storage/'));
-
-$container->share(SlackOauthStorage::class, fn () => new SlackOauthStorage(__DIR__ . '/../storage/'));
