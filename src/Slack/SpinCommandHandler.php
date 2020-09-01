@@ -92,7 +92,6 @@ class SpinCommandHandler
             $user->setSsoAccessToken($newAccessToken);
             $this->userRepository->update($user);
         }
-        $this->logger->debug('slash command for user', ['user' => $user]);
         $meeting = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
 
         $privateBody = sprintf('{
@@ -144,12 +143,7 @@ class SpinCommandHandler
             $_ENV['ROOT_URL'] . '/join/' . $spin->getUuid()
         );
 
-        $this->logger->debug('guestbody', ['body' => $guestBody]);
-
         $this->slackApiRepository->post($body['response_url'], $guestBody, $user->getSsoAccessToken());
-
-        $this->logger->debug($meeting->getStartMeetingUrl());
-        $this->logger->debug($meeting->getJoinMeetingUrl());
 
         $response->getBody()->write($privateBody);
 

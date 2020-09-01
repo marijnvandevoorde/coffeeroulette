@@ -37,10 +37,7 @@ class SlackCommandAuthenticationMiddleware
         RequestHandler $handler
     ): Response {
         $body = $request->getBody()->getContents();
-        $this->logger->debug('slack command auth', [
-            'headers' => $request->getHeaders(),
-            'body' => $body,
-        ]);
+
         if (empty($timestamp = $request->getHeader('X-Slack-Request-Timestamp')) || empty($signature = $request->getHeader('X-Slack-Signature'))) {
             throw new HttpBadRequestException($request, 'No timestap or signature header passed');
         }
@@ -51,13 +48,6 @@ class SlackCommandAuthenticationMiddleware
             'v0=' . hash_hmac('sha256', 'v0:' . $timestamp[0] . ':' . $body, $this->secret),
             $signature[0]
         )) {
-            $this->logger->debug('slack command auth', [
-                'header' => $timestamp,
-                'secret' => $this->secret,
-                'sign' => $signature,
-                'hash' => 'v0=' . hash_hmac('sha256', 'v0:' . $timestamp[0] . ':' . $body, $this->secret),
-            ]);
-
             throw new HttpUnauthorizedException($request, 'signature seems invalid');
         }
 

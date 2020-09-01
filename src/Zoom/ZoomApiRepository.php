@@ -44,7 +44,6 @@ class ZoomApiRepository
         /** @var ResponseInterface $createMeetingResponse */
         $createMeetingResponse = $this->oauthProvider->getResponse($request);
         $data = json_decode($createMeetingResponse->getBody()->getContents(), true);
-        $this->logger->debug($data['start_url']);
 
         return new ZoomMeeting(
             $data['start_url'],
