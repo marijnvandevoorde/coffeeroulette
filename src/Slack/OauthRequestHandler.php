@@ -71,14 +71,14 @@ class OauthRequestHandler
                 $user->setSsoAccessToken($accessToken);
                 $this->userRepository->update($user);
                 $request->getAttribute('session')->set('userid', $user->getId());
-                $response->getBody()->write('All ok! Now be sure to also authenticate <a href="/auth/zoom">zoom</a>');
+                $response->getBody()->write('All ok! Next up, allow us to create zoom meetings:<br /><a href="/auth/zoom"><img src="https://marketplacecontent.zoom.us/zoom_marketplace/img/add_to_zoom.png" height="32" alt="Add to ZOOM" /></a>');
 
                 return $response;
             } catch (UserNotFoundException $e) {
                 $user = new User('slack', $accessToken->getValues()['authed_user']['id'], $accessToken);
                 $user = $this->userRepository->add($user);
                 $request->getAttribute('session')->set('userid', $user->getId());
-                $response->getBody()->write('All ok! Now be sure to also authenticate <a href="/auth/zoom">zoom</a>');
+                $response->getBody()->write('All ok! Next up, allow us to create zoom meetings:<br /><a href="/auth/zoom"><img src="https://marketplacecontent.zoom.us/zoom_marketplace/img/add_to_zoom.png" height="32" alt="Add to ZOOM" /></a>');
 
                 return $response;
             }
