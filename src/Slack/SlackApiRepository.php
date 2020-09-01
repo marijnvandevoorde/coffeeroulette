@@ -21,10 +21,6 @@ class SlackApiRepository
 
     public function post(string $url, string $body, AccessTokenInterface $accessToken)
     {
-        $this->logger->debug('post', [
-            'url' => $url,
-            'body' => $body,
-        ]);
         $request = $this->oauthProvider->getAuthenticatedRequest(
             'POST',
             $url,
@@ -67,8 +63,6 @@ class SlackApiRepository
         );
         /** @var ResponseInterface $createMeetingResponse */
         $createMeetingResponse = $this->oauthProvider->getResponse($request);
-        $this->logger->debug('received response', ['headers' => $createMeetingResponse->getHeaders(), 'body' => $createMeetingResponse->getBody()->getContents()]);
-
         return $createMeetingResponse->getBody()->getContents();
     }
 }
