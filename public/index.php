@@ -34,7 +34,7 @@ if (!$container->get('settings')['displayErrorDetails']) {
     $errorHandler->registerErrorRenderer('text/html', HtmlErrorRenderer::class);
 }
 
-$app->any('/', function (Request $request, Response $response, $args) use ($container) {
+$app->any(['/', '/help.html'], function (Request $request, Response $response, $args) use ($container) {
     /** @var Twig $twig */
     $twig = $container->get(Twig::class);
     $response->getBody()->write($twig->getEnvironment()->render('landing.html', []));
