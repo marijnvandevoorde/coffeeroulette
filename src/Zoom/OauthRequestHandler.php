@@ -64,11 +64,11 @@ class OauthRequestHandler
             $accessToken = $this->oauthProvider->getAccessToken('authorization_code', [
                 'code' => $_GET['code'],
             ]);
-            $owner = $this->oauthProvider->getResourceOwner($accessToken);
+            //$owner = $this->oauthProvider->getResourceOwner($accessToken);
             /** @var Helper $session */
             $session = $request->getAttribute('session');
             $user = $this->userRepository->findById($session->get('userid'));
-            $user->setZoomUserid($owner->getId());
+            $user->setZoomUserid(uniqid("zm_"));
             $user->setZoomAccessToken($accessToken);
             $this->userRepository->update($user);
 
