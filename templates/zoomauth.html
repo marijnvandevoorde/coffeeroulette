@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Zoom Roulette</title>
+    <style>
+        html,
+        body {
+            color: #2e2e2e;
+            font-family: Verdana, sans-serif;
+            font-size: 1rem;
+        }
+
+        .message {
+            border-radius: .3em;
+            padding: .3em;
+            margin: 1em .3em;
+
+        }
+
+        .disclaimer {
+            border: 1px solid #88daad;
+            background-color: #88daaddd;
+
+        }
+
+        .error {
+            border: 1px solid #da9288;
+            background-color: #da9288dd;
+        }
+
+        a {
+            color: #2e2e2eaa;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #2e2e2e;
+            text-decoration: underline
+        }
+
+        #logo {
+            background-image: url('https://avatars.slack-edge.com/2020-05-15/1150334534032_1cd59dc429ffc09768f2_512.png');
+            height: 250px;
+            background-size: contain;
+            display: inline-block;
+            width: 100%;
+            background-repeat: no-repeat;
+            background-position: 50% 50%;
+
+        }
+
+        .copy {
+            line-height: 1.5em;
+        }
+
+        @media only screen and (min-width: 800px) {
+            #logo {
+                width: 200px;
+                height: 200px;
+                float: left;
+            }
+
+            .copy {
+                width: calc(100% - 260px);
+                float: left;
+                display: inline-block;
+                margin: 0 20px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="disclaimer message">Thank you for your interest in zoom-roulette. This app only works for people working
+    at Teamleader and for now there's time nor interest in making it available for people outside of our company. If
+    you're interested, happy to share the code. Or join us at <a href="https://careers.teamleader.eu"
+                                                                 target="_blank">Teamleader</a></div>
+<div class="image" id="logo">
+</div>
+<div class="copy">
+    {% if error %}
+    <p>
+        <a id="error" />
+    <div class="error message">
+        {{ error }}
+    </div>
+    </p>
+    <script language="javascript">
+        location.hash = "#error";
+    </script>
+    {% endif %}
+    <p>Half-way there! Slack is all set up, so all that's left is setting up zoom. Click the button below to do so</p>
+    <p><a href="/auth/zoom"><img src="https://marketplacecontent.zoom.us/zoom_marketplace/img/add_to_zoom.png" height="32" alt="Add to ZOOM" /></a>
+    </p>
+    <h2>About</h2>
+    <p>
+        For all info about this app, go <a href="/">here</a>.
+    </p>
+</div>
+</body>
+
+</html>

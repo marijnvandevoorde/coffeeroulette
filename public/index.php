@@ -34,24 +34,27 @@ if (!$container->get('settings')['displayErrorDetails']) {
     $errorHandler->registerErrorRenderer('text/html', HtmlErrorRenderer::class);
 }
 
-$app->any(['/', '/help.html'], function (Request $request, Response $response, $args) use ($container) {
+$home = function (Request $request, Response $response, $args) use ($container) {
     /** @var Twig $twig */
     $twig = $container->get(Twig::class);
     $response->getBody()->write($twig->getEnvironment()->render('landing.html', []));
     return $response;
 
-}); //->add(TwigMiddleware::create($app, $container->get(\Slim\Views\Twig::class)));
+}; //->add(TwigMiddleware::create($app, $container->get(\Slim\Views\Twig::class)));
 
+$app->any('/', $home);
+
+$app->any('/help.html', $home);
 
 $app->get('/join/{id}', JoinCallHandler::class);
 
 
-$app->group('/auth', function (RouteCollectorProxy $group) {
-    $group->get('/zoom', ZoomOauthRequestHandler::class)->add(AuthenticationMiddleware::class);
+$app->group('/auth', function (RouteCollectorProxy $group) use ($container) {
+    $group->get('/zoom', ZoomOauthRequestHandler::class)->add(
+        new AuthenticationMiddleware($group->getResponseFactory(), $container->get(Twig::class))
+    );
     $group->get('/slack', SlackOauthRequestHandler::class)->setName('slacklogin');
     $group->get('/', function (Request $request, Response $response, $args) {
-
-        var_dump($_SESSION);
         return $response;
     });
 
