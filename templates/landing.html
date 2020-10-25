@@ -12,13 +12,22 @@
             font-size: 1rem;
         }
 
-        .disclaimer {
-            border: 1px solid #88daad;
-            background-color: #88daaddd;
+        .message {
             border-radius: .3em;
             padding: .3em;
             margin: 1em .3em;
 
+        }
+
+        .disclaimer {
+            border: 1px solid #88daad;
+            background-color: #88daaddd;
+
+        }
+
+        .error {
+            border: 1px solid #da9288;
+            background-color: #da9288dd;
         }
 
         a {
@@ -89,7 +98,7 @@
             Put some spice in those long office days! By using the <span class="code">/zoomroulette
                 [amount-of-guests]</span> slack command in a channel of your liking, you can set up a zoom call with
             some random colleagues in that channel. What zoom roulette will do is post two links in the channel:</p>
-        <img src="https://api.monosnap.com/file/download?id=zOw7itSW9rsT4sWyum6T9qMfg3VUEQ" />
+        <img src="/img/slack-example.png" />
 
         <ul>
             <li>The first link is visible to everyone in the channel. It's probably best not click this one if you spun
@@ -111,6 +120,17 @@
         </ul>
 
         </p>
+        {% if error %}
+        <p>
+            <a id="error" />
+            <div class="error message">
+                {{ error }}
+            </div>
+        </p>
+        <script language="javascript">
+            location.hash = "#error";
+        </script>
+        {% endif %}
         <p><a
                 href="https://slack.com/oauth/v2/authorize?client_id=1132648415796.1150316507968&amp;scope=chat:write,commands,chat:write.public,chat:write.customize&amp;user_scope="><img
                     alt="Add to Slack" height="40" width="139"
