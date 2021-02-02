@@ -7,6 +7,7 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Slim\Views\Twig;
 use SlimSession\Helper;
 use Teamleader\Zoomroulette\Zoomroulette\User;
 use Teamleader\Zoomroulette\Zoomroulette\UserNotFoundException;
@@ -25,12 +26,17 @@ class OauthRequestHandler
     private $logger;
 
     private UserRepository $userRepository;
+    /**
+     * @var Twig
+     */
+    private Twig $templateEngine;
 
-    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository, LoggerInterface $logger)
+    public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository, LoggerInterface $logger, Twig $templateEngine)
     {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
         $this->userRepository = $userRepository;
+        $this->templateEngine = $templateEngine;
     }
 
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args)
@@ -55,7 +61,9 @@ class OauthRequestHandler
                 $session->delete('oauth2state');
             }
 
-            $response->getBody()->write('Something went wrong, try again <a href="/auth/slack">here</a>');
+            $response->getBody()->write(
+                $this->templateEngine->getEnvironment()->render('slackauth.html', ['error' => 'Something went wrong, please try again'])
+            );
 
             return $response->withStatus(400, 'Invalid state');
         }
@@ -71,25 +79,37 @@ class OauthRequestHandler
                 $user->setSsoAccessToken($accessToken);
                 $this->userRepository->update($user);
                 $request->getAttribute('session')->set('userid', $user->getId());
-                $response->getBody()->write('All ok! Next up, allow us to create zoom meetings:<br /><a href="/auth/zoom"><img src="https://marketplacecontent.zoom.us/zoom_marketplace/img/add_to_zoom.png" height="32" alt="Add to ZOOM" /></a>');
 
-                return $response;
+                $response->getBody()->write(
+                    $this->templateEngine->getEnvironment()->render('zoomauth.html')
+                );
+
+                return $response->withStatus(200);
             } catch (UserNotFoundException $e) {
                 $user = new User('slack', $accessToken->getValues()['authed_user']['id'], $accessToken);
                 $user = $this->userRepository->add($user);
                 $request->getAttribute('session')->set('userid', $user->getId());
-                $response->getBody()->write('All ok! Next up, allow us to create zoom meetings:<br /><a href="/auth/zoom"><img src="https://marketplacecontent.zoom.us/zoom_marketplace/img/add_to_zoom.png" height="32" alt="Add to ZOOM" /></a>');
 
-                return $response;
+                $response->getBody()->write(
+                    $this->templateEngine->getEnvironment()->render('zoomauth.html')
+                );
+
+                return $response->withStatus(200);
             }
         } catch (IdentityProviderException $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());
-            $response->getBody()->write('Something went wrong, try again <a href="/auth/slack">here</a>');
+
+            $response->getBody()->write(
+                $this->templateEngine->getEnvironment()->render('slackauth.html', ['error' => 'Something went wrong, please try again'])
+            );
 
             return $response->withStatus(400, $e->getMessage());
         } catch (Exception $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());
-            $response->getBody()->write('Something went wrong, try again <a href="/auth/slack">here</a>');
+
+            $response->getBody()->write(
+                $this->templateEngine->getEnvironment()->render('slackauth.html', ['error' => 'Something went wrong, please try again'])
+            );
 
             return $response->withStatus(400, $e->getMessage());
         }
