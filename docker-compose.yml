@@ -2,9 +2,9 @@ version: '3.3'
 services:
   zoomroulette-webserver:
     environment:
-      - VIRTUAL_HOST=zoomroulette.isitspringyet.be
+      - VIRTUAL_HOST=coffeeroulette.isitspringyet.be
       - VIRTUAL_PORT=80
-      - LETSENCRYPT_HOST=zoomroulette.isitspringyet.be
+      - LETSENCRYPT_HOST=coffeeroulette.isitspringyet.be
       - LETSENCRYPT_EMAIL=marijnnn@gmail.com
     image: 'nginx:alpine'
     container_name: zoomroulette-webserver

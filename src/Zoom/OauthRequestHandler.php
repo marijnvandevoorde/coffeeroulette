@@ -84,9 +84,10 @@ class OauthRequestHandler
             $user->setZoomAccessToken($accessToken);
             $this->userRepository->update($user);
 
-            $response->getBody()->write('All ok!');
-
-            return $response;
+            $response->getBody()->write(
+                $this->templateEngine->getEnvironment()->render('goodtogo.html')
+            );
+            return $response->withStatus(200);
         } catch (UserNotFoundException $e) {
 
             $response->getBody()->write(
