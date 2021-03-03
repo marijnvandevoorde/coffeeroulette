@@ -52,6 +52,7 @@
 
         }
 
+
         #pb {
             height: 40px;
             background-size: contain;
@@ -81,12 +82,19 @@
                 display: inline-block;
                 margin: 0 20px;
             }
-
             #pb {
                 float: left;
                 width: 200px;
                 clear: left;
             }
+        }
+        span.code {
+            background-color: #F8F8F8;
+            padding: .2em .2em;
+            border-radius: .2em;
+            border: 1px solid #DDDDDD;
+            white-space: nowrap;
+            font-family: fixed-width;
         }
 
     </style>
@@ -107,9 +115,8 @@
         location.hash = "#error";
     </script>
     {% endif %}
-    <p>Half-way there! Slack is all set up, so all that's left is setting up zoom. Click the button below to do so</p>
-    <p><a href="/auth/zoom"><img src="https://marketplacecontent.zoom.us/zoom_marketplace/img/add_to_zoom.png" height="32" alt="Add to ZOOM" /></a>
-    </p>
+    <p>You are good to go! Now open slack and go to a channel of your liking and type <span class="code">/coffeeroulette 2</span> in order to start a zoom call with 2 others in the channel. Of course, you can pick any other number.</p>
+
     <h2>About</h2>
     <p>
         For all info about this app, go <a href="/">here</a>.

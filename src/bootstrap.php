@@ -23,7 +23,7 @@ $container->share('settings', fn () => [
 ]);
 
 $container->share(SessionMiddleware::class, fn () => new SessionMiddleware([
-    'name' => 'zoomroulette',
+    'name' => 'covfeferoulette',
     'autorefresh' => true,
     'lifetime' => '20 minutes',
 ]));
