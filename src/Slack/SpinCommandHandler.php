@@ -130,7 +130,7 @@ class SpinCommandHandler
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": "Ooooh, someone spun the zoom roulette! Act fast, think later!"
+                            "text": "Ooooh, someone spun the coffee roulette! Act fast, think later!"
                         },
                         "accessory": {
                             "type": "button",

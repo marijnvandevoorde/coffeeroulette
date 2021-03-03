@@ -1,24 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
+<html lang="en"><head>
     <meta charset="UTF-8">
-    <title>Zoom Roulette</title>
+    <title>Coffee Roulette</title>
     <style>
-        html,
+     html,
         body {
             color: #2e2e2e;
             font-family: Verdana, sans-serif;
             font-size: 1rem;
+            margin: 1rem;
+        }
+
+        .message {
+            border-radius: .3em;
+            padding: .3em;
+            margin: 1em .3em;
+
         }
 
         .disclaimer {
             border: 1px solid #88daad;
             background-color: #88daaddd;
-            border-radius: .3em;
-            padding: .3em;
-            margin: 1em .3em;
 
+        }
+
+        .error {
+            border: 1px solid #da9288;
+            background-color: #da9288dd;
         }
 
         a {
@@ -42,6 +49,12 @@
 
         }
 
+        #pb {
+            height: 40px;
+            display: inline-block;
+            width: 100%;
+        }
+
         .copy {
             line-height: 1.5em;
         }
@@ -51,6 +64,9 @@
         }
 
         @media only screen and (min-width: 800px) {
+            body {
+                margin: 2rem;
+            }
             #logo {
                 width: 200px;
                 height: 200px;
@@ -59,9 +75,14 @@
 
             .copy {
                 width: calc(100% - 260px);
-                float: left;
+                float: right;
                 display: inline-block;
                 margin: 0 20px;
+            }
+            #pb {
+                float: left;
+                width: 200px;
+                clear: left;
             }
         }
 
@@ -77,20 +98,19 @@
 </head>
 
 <body>
-    <div class="disclaimer message">Thank you for your interest in zoom-roulette. This app only works for people working
-        at Teamleader and for now there's time nor interest in making it available for people outside of our company. If
-        you're interested, happy to share the code. Or join us at <a href="https://careers.teamleader.eu"
-            target="_blank">Teamleader</a></div>
+
+    <div class="disclaimer message">Thank you for your interest in Coffee Roulette.
+    </div>
     <div class="image" id="logo">
     </div>
     <div class="copy">
-        <h1>Zoom Roulette - <strong>Terms and Conditions</strong></h1>
+        <h1>Coffee Roulette - <strong>Terms and Conditions</strong></h1>
 
 
         <p>These terms and conditions outline the rules and regulations for the use of Marijnworks's Website, located at
-            http://zoom-roulette-poc.herokuapp.com.</p>
+            https://coffeeroulette.isitspringyet.be.</p>
 
-        <p>By accessing this website we assume you accept these terms and conditions. Do not continue to use Zoom
+        <p>By accessing this website we assume you accept these terms and conditions. Do not continue to use Coffee
             Roulette if you do not agree to take all of the terms and conditions stated on this page.</p>
 
         <p>The following terminology applies to these Terms and Conditions, Privacy Statement and Disclaimer Notice and
@@ -105,7 +125,7 @@
 
         <h3><strong>Cookies</strong></h3>
 
-        <p>We employ the use of cookies. By accessing Zoom Roulette, you agreed to use cookies in agreement with the
+        <p>We employ the use of cookies. By accessing Coffee Roulette, you agreed to use cookies in agreement with the
             Marijnworks's Privacy Policy. </p>
 
         <p>Most interactive websites use cookies to let us retrieve the user’s details for each visit. Cookies are used
@@ -115,20 +135,18 @@
         <h3><strong>License</strong></h3>
 
         <p>Unless otherwise stated, Marijnworks and/or its licensors own the intellectual property rights for all
-            material on Zoom Roulette. All intellectual property rights are reserved. You may access this from Zoom
+            material on Coffee Roulette. All intellectual property rights are reserved. You may access this from Coffee
             Roulette for your own personal use subjected to restrictions set in these terms and conditions.</p>
 
         <p>You must not:</p>
         <ul>
-            <li>Republish material from Zoom Roulette</li>
-            <li>Sell, rent or sub-license material from Zoom Roulette</li>
-            <li>Reproduce, duplicate or copy material from Zoom Roulette</li>
-            <li>Redistribute content from Zoom Roulette</li>
+            <li>Republish material from Coffee Roulette</li>
+            <li>Sell, rent or sub-license material from Coffee Roulette</li>
+            <li>Reproduce, duplicate or copy material from Coffee Roulette</li>
+            <li>Redistribute content from Coffee Roulette</li>
         </ul>
 
-        <p>This Agreement shall begin on the date hereof. Our Terms and Conditions were created with the help of the <a
-                href="https://www.termsandconditionsgenerator.com">Terms And Conditions Generator</a> and the <a
-                href="https://www.generateprivacypolicy.com">Privacy Policy Generator</a>.</p>
+        <p>This Agreement shall begin on the date hereof. Our Terms and Conditions were created with the help of the <a href="https://www.termsandconditionsgenerator.com">Terms And Conditions Generator</a> and the <a href="https://www.generateprivacypolicy.com">Privacy Policy Generator</a>.</p>
 
         <p>Parts of this website offer an opportunity for users to post and exchange opinions and information in certain
             areas of the website. Marijnworks does not filter, edit, publish or review Comments prior to their presence
@@ -268,6 +286,10 @@
             not be liable for any loss or damage of any nature.</p>
 
     </div>
-</body>
 
-</html>
+    <div class="image" id="pb"><a target="_blank" class="logo" href="https://www.madewithlove.com"><svg style="margin-right: 3px" width="30" viewBox="0 0 46 35" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo_svg"><path d="M33.3983 0L22.7797 10.6186L12.161 0L0 12.161L22.7797 34.9407L33.3983 24.322L45.5593 12.161L33.3983 0ZM33.3983 2.9661L42.5339 12.1017H24.322L33.3983 2.9661ZM22.7797 31.9153L2.9661 12.161L12.161 2.9661L21.3559 12.161L31.9746 22.7797L22.7797 31.9153Z" fill="#ed2324"></path></svg><span class="logo-title">madewithlove</span></a>
+    </div>
+
+
+
+</body></html>
