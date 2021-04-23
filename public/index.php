@@ -46,9 +46,7 @@ $app->any('/', $home);
 
 $app->any('/help.html', $home);
 
-$app->get('/support', function () use ($app) {
-    $app->redirect('https://github.com/mrnnn/coffeeroulette/issues');
-});
+$app->get('/support', 'https://github.com/mrnnn/coffeeroulette/issues');
 
 $app->get('/join/{id}', JoinCallHandler::class);
 
