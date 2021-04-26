@@ -28,7 +28,7 @@ class JoinCallHandler
 
             return $response->withHeader('Location', $spin->getJoinLink())->withStatus(302);
         } catch (SpinNotFoundException $e) {
-            $response->getBody()->write('woops, too late! why not start your own spin using the /coffeeroulette slack command?');
+            $response->getBody()->write('woops, too late! why not start your own spin using the /coffeeroulette slash command?');
 
             return $response->withStatus(404);
         }
