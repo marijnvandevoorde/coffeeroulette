@@ -23,7 +23,7 @@ class HtmlErrorRenderer extends SlimHtmlErrorRenderer
         }
         if ($exception instanceof HttpForbiddenException) {
             return $this->view->getEnvironment()->render('errors/default.html', [
-                'message' => 'please authenticate through slack before trying to link a zoom account',
+                'message' => 'please authenticate through Slack before trying to link a Zoom account',
                 'link' => [
                     'copy' => 'login',
                     'link' => 'slacklogin',

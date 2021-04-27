@@ -91,7 +91,7 @@ class OauthRequestHandler
         } catch (UserNotFoundException $e) {
 
             $response->getBody()->write(
-                $this->templateEngine->getEnvironment()->render('slackauth.html', ['error' => 'Please authorize via slack first and then link your zoom account.'])
+                $this->templateEngine->getEnvironment()->render('slackauth.html', ['error' => 'Please authorize via Slack first and then link your Zoom account.'])
             );
             return $response->withStatus(400, 'Please autohrize via Slack first');
         } catch (IdentityProviderException $e) {
