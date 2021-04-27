@@ -46,7 +46,11 @@ $app->any('/', $home);
 
 $app->any('/help.html', $home);
 
-$app->get('/support', 'https://github.com/mrnnn/coffeeroulette/issues');
+$app->any('/support', function(Request $request, Response $response, $args) use ($container) {
+	$twig = $container->get(Twig::class);
+	$response->getBody()->write($twig->getEnvironment()->render('support.html', []));
+	return $response;
+});
 
 $app->get('/join/{id}', JoinCallHandler::class);
 
