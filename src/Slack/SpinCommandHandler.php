@@ -52,7 +52,7 @@ class SpinCommandHandler
         try {
             $user = $this->userRepository->findBySsoId('slack', $body['user_id']);
 	    if (!$user->getZoomAccessToken()) {
-		    throw new UserNotFoundException('no zoom access token');
+		    throw new UserNotFoundException('no Zoom access token');
 	    }
         } catch (UserNotFoundException $e) {
             // No user, tell the one who called zoom

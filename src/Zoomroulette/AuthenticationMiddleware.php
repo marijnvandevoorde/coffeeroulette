@@ -36,7 +36,7 @@ class AuthenticationMiddleware
             $response = $this->responseFactory->createResponse();
 
             $response->getBody()->write(
-                $this->templateEngine->getEnvironment()->render('slackauth.html', ['error' => 'Please authorize your slack account first and then setup your zoom account.'])
+                $this->templateEngine->getEnvironment()->render('slackauth.html', ['error' => 'Please authorize your Slack account first and then setup your Zoom account.'])
             );
             return $response->withStatus(500);
         }
