@@ -8,7 +8,6 @@ use PDOException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
-use Slim\Exception\HttpForbiddenException;
 use Slim\Views\Twig;
 use SlimSession\Helper;
 use Teamleader\Zoomroulette\Zoomroulette\UserNotFoundException;
@@ -27,9 +26,7 @@ class OauthRequestHandler
     private $logger;
 
     private UserRepository $userRepository;
-    /**
-     * @var Twig
-     */
+
     private Twig $templateEngine;
 
     public function __construct(
@@ -37,7 +34,6 @@ class OauthRequestHandler
         UserRepository $userRepository,
         LoggerInterface $logger,
         Twig $templateEngine
-
     ) {
         $this->oauthProvider = $oauthProvider;
         $this->logger = $logger;
@@ -80,19 +76,20 @@ class OauthRequestHandler
             /** @var Helper $session */
             $session = $request->getAttribute('session');
             $user = $this->userRepository->findById($session->get('userid'));
-            $user->setZoomUserid(uniqid("zm_"));
+            $user->setZoomUserid(uniqid('zm_'));
             $user->setZoomAccessToken($accessToken);
             $this->userRepository->update($user);
 
             $response->getBody()->write(
                 $this->templateEngine->getEnvironment()->render('goodtogo.html')
             );
+
             return $response->withStatus(200);
         } catch (UserNotFoundException $e) {
-
             $response->getBody()->write(
                 $this->templateEngine->getEnvironment()->render('slackauth.html', ['error' => 'Please authorize via Slack first and then link your Zoom account.'])
             );
+
             return $response->withStatus(400, 'Please autohrize via Slack first');
         } catch (IdentityProviderException $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());
@@ -100,6 +97,7 @@ class OauthRequestHandler
             $response->getBody()->write(
                 $this->templateEngine->getEnvironment()->render('zoomauth.html', ['error' => 'Something went wrong, please try again'])
             );
+
             return $response->withStatus(400);
         } catch (PDOException $e) {
             $this->logger->error('Database unreachable', ['exception' => $e]);
@@ -107,6 +105,7 @@ class OauthRequestHandler
             $response->getBody()->write(
                 $this->templateEngine->getEnvironment()->render('zoomauth.html', ['error' => 'Something went wrong, please try again'])
             );
+
             return $response->withStatus(500);
         } catch (Exception $e) {
             $this->logger->error('Failed to get access token or user details', $e->getTrace());
@@ -114,6 +113,7 @@ class OauthRequestHandler
             $response->getBody()->write(
                 $this->templateEngine->getEnvironment()->render('zoomauth.html', ['error' => 'Something went wrong, please try again'])
             );
+
             return $response->withStatus(500);
         }
     }
