@@ -48,8 +48,8 @@ class SpinCommandHandler
             'text' => $body['text'],
         ]);
 
-        /** @var User $user */
         try {
+            /** @var User $user */
             $user = $this->userRepository->findBySsoId('slack', $body['user_id']);
             if (!$user->getZoomAccessToken()) {
                 throw new UserNotFoundException('no Zoom access token');
