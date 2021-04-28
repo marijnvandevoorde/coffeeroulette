@@ -18,19 +18,20 @@ class ZoomApiRepository
         $this->logger = $logger;
     }
 
-    public function getMe(AccessTokenInterface $accessToken) {
+    public function getMe(AccessTokenInterface $accessToken)
+    {
         $request = $this->oauthProvider->getAuthenticatedRequest(
             'GET',
             sprintf('https://api.zoom.us/v2/users/me'),
             $accessToken,
-
         );
+
         return $this->oauthProvider->getResponse($request);
     }
 
     public function createMeeting(string $zoomUserId, AccessTokenInterface $accessToken): ZoomMeeting
     {
-        $this->logger->debug("create meeting or at least try", ['token' => $accessToken->jsonSerialize()]);
+        $this->logger->debug('create meeting or at least try', ['token' => $accessToken->jsonSerialize()]);
         $payload = [
             'topic' => 'Zoom roulette baby!',
             'type' => 1,
@@ -39,7 +40,7 @@ class ZoomApiRepository
                 'participant_video' => true,
                 'join_before_host' => true,
                 'enforce_login' => false,
-		'use_pmi' => false,
+                'use_pmi' => false,
             ],
         ];
         $request = $this->oauthProvider->getAuthenticatedRequest(
@@ -53,13 +54,13 @@ class ZoomApiRepository
                 ],
             ]
         );
+
         try {
             /** @var ResponseInterface $createMeetingResponse */
             $createMeetingResponse = $this->oauthProvider->getResponse($request);
             $data = json_decode($createMeetingResponse->getBody()->getContents(), true);
         } catch (\Exception $e) {
             $this->logger->error('call failed', ['error' => $e->getMessage()]);
-
         }
 
         return new ZoomMeeting(

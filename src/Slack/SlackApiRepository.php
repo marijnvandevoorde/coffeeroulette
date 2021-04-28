@@ -63,6 +63,7 @@ class SlackApiRepository
         );
         /** @var ResponseInterface $createMeetingResponse */
         $createMeetingResponse = $this->oauthProvider->getResponse($request);
+
         return $createMeetingResponse->getBody()->getContents();
     }
 }

@@ -26,9 +26,7 @@ class OauthRequestHandler
     private $logger;
 
     private UserRepository $userRepository;
-    /**
-     * @var Twig
-     */
+
     private Twig $templateEngine;
 
     public function __construct(OauthProvider $oauthProvider, UserRepository $userRepository, LoggerInterface $logger, Twig $templateEngine)
