@@ -61,6 +61,8 @@ class ZoomApiRepository
             $data = json_decode($createMeetingResponse->getBody()->getContents(), true);
         } catch (\Exception $e) {
             $this->logger->error('call failed', ['error' => $e->getMessage()]);
+
+            throw new CouldNotCreateMeetingException($e->getMessage());
         }
 
         return new ZoomMeeting(
