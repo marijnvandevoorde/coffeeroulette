@@ -39,6 +39,7 @@ class ZoomApiRepository
                 'participant_video' => true,
                 'join_before_host' => true,
                 'enforce_login' => false,
+		'use_pmi' => false,
             ],
         ];
         $request = $this->oauthProvider->getAuthenticatedRequest(
