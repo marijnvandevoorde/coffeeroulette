@@ -8,7 +8,6 @@ use PhpCsFixer\RuleSet;
 $finder = Finder::create()
 	->in([
 		'src',
-		'tests',
 	]);
 
 $rules = [
