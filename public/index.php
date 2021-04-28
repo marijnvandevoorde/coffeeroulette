@@ -45,6 +45,9 @@ $home = function (Request $request, Response $response, $args) use ($container) 
 $app->any('/', $home);
 
 $app->any('/help.html', $home);
+$app->any('/devnull', function (Request $request, Response $response, $args) use ($container) {
+	return $response;
+});
 
 $app->any('/support', function(Request $request, Response $response, $args) use ($container) {
 	$twig = $container->get(Twig::class);
