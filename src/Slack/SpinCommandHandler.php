@@ -5,6 +5,7 @@ namespace Teamleader\Zoomroulette\Slack;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Teamleader\Zoomroulette\Zoom\CouldNotCreateMeetingException;
 use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
 use Teamleader\Zoomroulette\Zoom\ZoomApiRepository;
 use Teamleader\Zoomroulette\Zoomroulette\Spin;
@@ -95,7 +96,24 @@ class SpinCommandHandler
             $user->setSsoAccessToken($newAccessToken);
             $this->userRepository->update($user);
         }
-        $meeting = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
+
+        try {
+            $meeting = $this->zoomApiRepository->createMeeting($user->getZoomUserid(), $user->getZoomAccessToken());
+        } catch (CouldNotCreateMeetingException $e) {
+            $response->getBody()->write('{
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "That didn\'t work quite as planned. Coffee Roulette was unable to create a meeting. Try again maybe?"
+                        }
+                    }
+                ]
+            }');
+
+            return $response->withHeader('Content-type', 'application/json');
+        }
 
         $privateBody = sprintf('{
             "blocks": [
