@@ -20,9 +20,8 @@
         "doctrine/dbal": "^2.10",
         "ext-json": "*",
         "ext-pdo": "*",
-        "ramsey/uuid": "^4.1"
-    },
-    "require-dev": {
+        "ramsey/uuid": "^4.1",
+        "defuse/php-encryption": "^2.3"
     },
     "autoload": {
 
