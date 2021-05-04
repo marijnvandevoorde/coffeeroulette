@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Zoomroulette;
+namespace Marijnworks\Zoomroulette\Zoomroulette;
 
 use Doctrine\DBAL\Connection;
 
@@ -9,10 +9,12 @@ class UserRepository
     const TABLE_NAME = 'users';
 
     private Connection $connection;
+    private EncryptionToolkit $encryptionToolkit;
 
-    public function __construct(Connection $connection)
+    public function __construct(Connection $connection, EncryptionToolkit $encryptionToolkit)
     {
         $this->connection = $connection;
+        $this->encryptionToolkit = $encryptionToolkit;
     }
 
     public function add(User $user): User
@@ -22,9 +24,9 @@ class UserRepository
             [
                 'sso_platform' => $user->getSsoPlatform(),
                 'sso_userid' => $user->getSsoUserId(),
-                'sso_credentials' => json_encode($user->getSsoAccessToken()),
+                'sso_credentials' => $this->encryptionToolkit->encrypt(json_encode($user->getSsoAccessToken())),
                 'zoom_userid' => $user->getZoomUserid(),
-                'zoom_credentials' => json_encode($user->getZoomAccessToken()),
+                'zoom_credentials' => $this->encryptionToolkit->encrypt(json_encode($user->getZoomAccessToken())),
             ]
         );
         $user->setId($this->connection->lastInsertId());
@@ -39,9 +41,9 @@ class UserRepository
             [
                 'sso_platform' => $user->getSsoPlatform(),
                 'sso_userid' => $user->getSsoUserId(),
-                'sso_credentials' => json_encode($user->getSsoAccessToken()),
+                'sso_credentials' => $this->encryptionToolkit->encrypt(json_encode($user->getSsoAccessToken())),
                 'zoom_userid' => $user->getZoomUserId(),
-                'zoom_credentials' => json_encode($user->getZoomAccessToken()),
+                'zoom_credentials' => $this->encryptionToolkit->encrypt(json_encode($user->getZoomAccessToken())),
             ],
             [
                 'id' => $user->getId(),
@@ -62,6 +64,8 @@ class UserRepository
         if (!$row) {
             throw new UserNotFoundException('No user by this id');
         }
+        $row['zoom_credentials'] = $this->encryptionToolkit->decrpyt($row['zoom_credentials']);
+        $row['sso_credentials'] = $this->encryptionToolkit->decrpyt($row['sso_credentials']);
 
         return User::withSqlRecord($row);
     }
@@ -81,6 +85,9 @@ class UserRepository
         if (!$row) {
             throw new UserNotFoundException('No user by this id');
         }
+
+        $row['zoom_credentials'] = $this->encryptionToolkit->decrpyt($row['zoom_credentials']);
+        $row['sso_credentials'] = $this->encryptionToolkit->decrpyt($row['sso_credentials']);
 
         return User::withSqlRecord($row);
     }

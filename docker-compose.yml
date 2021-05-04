@@ -41,6 +41,7 @@ services:
       - SESSION_SECRET=${SESSION_SECRET}
       - DATABASE_URL=${DATABASE_URL}
       - LOG_LEVEL=${LOG_LEVEL}
+      - CRYPTO_SECRET=${CRYPTO_SECRET}
 networks:
   default:
     external:

@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Slack;
+namespace Marijnworks\Zoomroulette\Slack;
 
 use Exception;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -9,9 +9,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use SlimSession\Helper;
-use Teamleader\Zoomroulette\Zoomroulette\User;
-use Teamleader\Zoomroulette\Zoomroulette\UserNotFoundException;
-use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
+use Marijnworks\Zoomroulette\Zoomroulette\User;
+use Marijnworks\Zoomroulette\Zoomroulette\UserNotFoundException;
+use Marijnworks\Zoomroulette\Zoomroulette\UserRepository;
 
 class OauthRequestHandler
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Zoom;
+namespace Marijnworks\Zoomroulette\Zoom;
 
 use Exception;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -10,8 +10,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use SlimSession\Helper;
-use Teamleader\Zoomroulette\Zoomroulette\UserNotFoundException;
-use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
+use Marijnworks\Zoomroulette\Zoomroulette\UserNotFoundException;
+use Marijnworks\Zoomroulette\Zoomroulette\UserRepository;
 
 class OauthRequestHandler
 {

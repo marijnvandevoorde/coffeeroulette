@@ -5,16 +5,16 @@ use Psr\Log\LoggerInterface;
 use Slim\Factory\AppFactory;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Views\Twig;
-use Teamleader\Zoomroulette\Slack\OauthRequestHandler as SlackOauthRequestHandler;
-use Teamleader\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
-use Teamleader\Zoomroulette\Slack\SpinCommandHandler;
-use Teamleader\Zoomroulette\Zoom\MeetingTestRequestHandler;
-use Teamleader\Zoomroulette\Zoom\OauthRequestHandler as ZoomOauthRequestHandler;
-use Teamleader\Zoomroulette\Zoomroulette\AuthenticationMiddleware;
-use Teamleader\Zoomroulette\Zoomroulette\ErrorHandler;
-use Teamleader\Zoomroulette\Zoomroulette\HtmlErrorRenderer;
-use Teamleader\Zoomroulette\Zoomroulette\SessionMiddleware;
-use Teamleader\Zoomroulette\Zoomroulette\JoinCallHandler;
+use Marijnworks\Zoomroulette\Slack\OauthRequestHandler as SlackOauthRequestHandler;
+use Marijnworks\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
+use Marijnworks\Zoomroulette\Slack\SpinCommandHandler;
+use Marijnworks\Zoomroulette\Zoom\MeetingTestRequestHandler;
+use Marijnworks\Zoomroulette\Zoom\OauthRequestHandler as ZoomOauthRequestHandler;
+use Marijnworks\Zoomroulette\Zoomroulette\AuthenticationMiddleware;
+use Marijnworks\Zoomroulette\Zoomroulette\ErrorHandler;
+use Marijnworks\Zoomroulette\Zoomroulette\HtmlErrorRenderer;
+use Marijnworks\Zoomroulette\Zoomroulette\SessionMiddleware;
+use Marijnworks\Zoomroulette\Zoomroulette\JoinCallHandler;
 
 require __DIR__ . '/../src/bootstrap.php';
 

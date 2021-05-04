@@ -1,18 +1,20 @@
 <?php
 
+use Defuse\Crypto\Key;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
+use Marijnworks\Zoomroulette\Zoomroulette\EncryptionToolkit;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use SlimSession\Helper;
-use Teamleader\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
-use Teamleader\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
-use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
-use Teamleader\Zoomroulette\Zoomroulette\SessionMiddleware;
+use Marijnworks\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
+use Marijnworks\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
+use Marijnworks\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
+use Marijnworks\Zoomroulette\Zoomroulette\SessionMiddleware;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -68,6 +70,10 @@ $container->share(Twig::class, fn () => Twig::create(
     [
         'cache' => __DIR__ . '/../templates/cache',
     ]
+));
+
+$container->share(EncryptionToolkit::class,  fn () => new EncryptionToolkit(
+    Key::loadFromAsciiSafeString($_ENV['CRYPTO_SECRET'])
 ));
 
 $container->share(LoggerInterface::class, function () {
