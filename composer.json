@@ -1,5 +1,5 @@
 {
-    "name": "teamleader/zoom-roulette",
+    "name": "marijnworks/zoom-roulette",
     "description": "A bot to set up random zoom meetings for smalltalk.",
     "type": "project",
     "config": {
@@ -20,19 +20,18 @@
         "doctrine/dbal": "^2.10",
         "ext-json": "*",
         "ext-pdo": "*",
-        "ramsey/uuid": "^4.1"
-    },
-    "require-dev": {
+        "ramsey/uuid": "^4.1",
+        "defuse/php-encryption": "^2.3"
     },
     "autoload": {
 
         "psr-4": {
-            "Teamleader\\Zoomroulette\\": "src/"
+            "Marijnworks\\Zoomroulette\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Teamleader\\Zoomroulette\\": "tests/"
+            "Marijnworks\\Zoomroulette\\": "tests/"
         }
     },
     "license": "MIT"

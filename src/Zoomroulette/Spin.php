@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Zoomroulette;
+namespace Marijnworks\Zoomroulette\Zoomroulette;
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
