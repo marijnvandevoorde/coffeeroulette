@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Zoomroulette;
+namespace Marijnworks\Zoomroulette\Zoomroulette;
 
 use Slim\Error\Renderers\HtmlErrorRenderer as SlimHtmlErrorRenderer;
 use Slim\Exception\HttpForbiddenException;

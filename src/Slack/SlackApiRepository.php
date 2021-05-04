@@ -1,11 +1,11 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Slack;
+namespace Marijnworks\Zoomroulette\Slack;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
-use Teamleader\Zoomroulette\Slack\OauthProvider as OauthProviderAlias;
+use Marijnworks\Zoomroulette\Slack\OauthProvider as OauthProviderAlias;
 
 class SlackApiRepository
 {

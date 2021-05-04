@@ -9,10 +9,10 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use SlimSession\Helper;
-use Teamleader\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
-use Teamleader\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
-use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
-use Teamleader\Zoomroulette\Zoomroulette\SessionMiddleware;
+use Marijnworks\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
+use Marijnworks\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
+use Marijnworks\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
+use Marijnworks\Zoomroulette\Zoomroulette\SessionMiddleware;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
