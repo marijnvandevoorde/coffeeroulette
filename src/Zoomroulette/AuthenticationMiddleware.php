@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Zoomroulette;
+namespace Marijnworks\Zoomroulette\Zoomroulette;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;

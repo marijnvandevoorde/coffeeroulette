@@ -1,18 +1,18 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Slack;
+namespace Marijnworks\Zoomroulette\Slack;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
-use Teamleader\Zoomroulette\Zoom\CouldNotCreateMeetingException;
-use Teamleader\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
-use Teamleader\Zoomroulette\Zoom\ZoomApiRepository;
-use Teamleader\Zoomroulette\Zoomroulette\Spin;
-use Teamleader\Zoomroulette\Zoomroulette\SpinRepository;
-use Teamleader\Zoomroulette\Zoomroulette\User;
-use Teamleader\Zoomroulette\Zoomroulette\UserNotFoundException;
-use Teamleader\Zoomroulette\Zoomroulette\UserRepository;
+use Marijnworks\Zoomroulette\Zoom\CouldNotCreateMeetingException;
+use Marijnworks\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
+use Marijnworks\Zoomroulette\Zoom\ZoomApiRepository;
+use Marijnworks\Zoomroulette\Zoomroulette\Spin;
+use Marijnworks\Zoomroulette\Zoomroulette\SpinRepository;
+use Marijnworks\Zoomroulette\Zoomroulette\User;
+use Marijnworks\Zoomroulette\Zoomroulette\UserNotFoundException;
+use Marijnworks\Zoomroulette\Zoomroulette\UserRepository;
 
 class SpinCommandHandler
 {

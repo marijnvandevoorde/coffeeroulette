@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Zoomroulette;
+namespace Marijnworks\Zoomroulette\Zoomroulette;
 
 class SpinNotFoundException extends \Exception
 {

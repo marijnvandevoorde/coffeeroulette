@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Zoom;
+namespace Marijnworks\Zoomroulette\Zoom;
 
 class CouldNotCreateMeetingException extends \Exception
 {

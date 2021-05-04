@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Slack;
+namespace Marijnworks\Zoomroulette\Slack;
 
 use League\OAuth2\Client\Provider\GenericProvider;
 

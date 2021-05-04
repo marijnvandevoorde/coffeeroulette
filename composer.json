@@ -1,5 +1,5 @@
 {
-    "name": "teamleader/zoom-roulette",
+    "name": "marijnworks/zoom-roulette",
     "description": "A bot to set up random zoom meetings for smalltalk.",
     "type": "project",
     "config": {
@@ -27,12 +27,12 @@
     "autoload": {
 
         "psr-4": {
-            "Teamleader\\Zoomroulette\\": "src/"
+            "Marijnworks\\Zoomroulette\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Teamleader\\Zoomroulette\\": "tests/"
+            "Marijnworks\\Zoomroulette\\": "tests/"
         }
     },
     "license": "MIT"

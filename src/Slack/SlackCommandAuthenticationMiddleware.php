@@ -1,6 +1,6 @@
 <?php
 
-namespace Teamleader\Zoomroulette\Slack;
+namespace Marijnworks\Zoomroulette\Slack;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface;
