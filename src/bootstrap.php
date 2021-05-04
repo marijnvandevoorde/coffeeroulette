@@ -1,9 +1,11 @@
 <?php
 
+use Defuse\Crypto\Key;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
+use Marijnworks\Zoomroulette\Zoomroulette\EncryptionToolkit;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -68,6 +70,10 @@ $container->share(Twig::class, fn () => Twig::create(
     [
         'cache' => __DIR__ . '/../templates/cache',
     ]
+));
+
+$container->share(EncryptionToolkit::class,  fn () => new EncryptionToolkit(
+    Key::loadFromAsciiSafeString($_ENV['CRYPTO_SECRET'])
 ));
 
 $container->share(LoggerInterface::class, function () {
