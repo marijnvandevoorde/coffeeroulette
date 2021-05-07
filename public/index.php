@@ -8,6 +8,7 @@ use Slim\Views\Twig;
 use Marijnworks\Zoomroulette\Slack\OauthRequestHandler as SlackOauthRequestHandler;
 use Marijnworks\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
 use Marijnworks\Zoomroulette\Slack\SpinCommandHandler;
+use Marijnworks\Zoomroulette\Slack\HelpCommandHandler;
 use Marijnworks\Zoomroulette\Zoom\MeetingTestRequestHandler;
 use Marijnworks\Zoomroulette\Zoom\OauthRequestHandler as ZoomOauthRequestHandler;
 use Marijnworks\Zoomroulette\Zoomroulette\AuthenticationMiddleware;
@@ -72,6 +73,7 @@ $app->group('/auth', function (RouteCollectorProxy $group) use ($container) {
 
 $app->group('/slack', function (RouteCollectorProxy $group) {
    $group->post('/spin', SpinCommandHandler::class);
+   $group->post('/help', HelpCommandHandler::class);
 })->add($container->get(SlackCommandAuthenticationMiddleware::class));
 
 
