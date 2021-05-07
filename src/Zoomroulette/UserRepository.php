@@ -9,6 +9,7 @@ class UserRepository
     const TABLE_NAME = 'users';
 
     private Connection $connection;
+
     private EncryptionToolkit $encryptionToolkit;
 
     public function __construct(Connection $connection, EncryptionToolkit $encryptionToolkit)
