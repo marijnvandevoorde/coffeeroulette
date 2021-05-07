@@ -5,16 +5,16 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
+use Marijnworks\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
+use Marijnworks\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
+use Marijnworks\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
 use Marijnworks\Zoomroulette\Zoomroulette\EncryptionToolkit;
+use Marijnworks\Zoomroulette\Zoomroulette\SessionMiddleware;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use SlimSession\Helper;
-use Marijnworks\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
-use Marijnworks\Zoomroulette\Slack\SlackCommandAuthenticationMiddleware;
-use Marijnworks\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
-use Marijnworks\Zoomroulette\Zoomroulette\SessionMiddleware;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -72,7 +72,7 @@ $container->share(Twig::class, fn () => Twig::create(
     ]
 ));
 
-$container->share(EncryptionToolkit::class,  fn () => new EncryptionToolkit(
+$container->share(EncryptionToolkit::class, fn () => new EncryptionToolkit(
     Key::loadFromAsciiSafeString($_ENV['CRYPTO_SECRET'])
 ));
 

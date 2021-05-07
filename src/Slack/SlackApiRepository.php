@@ -3,9 +3,9 @@
 namespace Marijnworks\Zoomroulette\Slack;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
+use Marijnworks\Zoomroulette\Slack\OauthProvider as OauthProviderAlias;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
-use Marijnworks\Zoomroulette\Slack\OauthProvider as OauthProviderAlias;
 
 class SlackApiRepository
 {
