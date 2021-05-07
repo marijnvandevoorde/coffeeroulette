@@ -4,14 +4,14 @@ namespace Marijnworks\Zoomroulette\Slack;
 
 use Exception;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Marijnworks\Zoomroulette\Zoomroulette\User;
+use Marijnworks\Zoomroulette\Zoomroulette\UserNotFoundException;
+use Marijnworks\Zoomroulette\Zoomroulette\UserRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use SlimSession\Helper;
-use Marijnworks\Zoomroulette\Zoomroulette\User;
-use Marijnworks\Zoomroulette\Zoomroulette\UserNotFoundException;
-use Marijnworks\Zoomroulette\Zoomroulette\UserRepository;
 
 class OauthRequestHandler
 {
@@ -44,7 +44,7 @@ class OauthRequestHandler
             // urlAuthorize option and generates and applies any necessary parameters
             // (e.g. state).
             $authorizationUrl = $this->oauthProvider->getAuthorizationUrl([
-                'scope' => ['chat:write commands', 'chat:write.customize', 'chat:write.public'],
+                'scope' => ['commands'],
             ]);
 
             $request->getAttribute('session')->set('oauth2state', $this->oauthProvider->getState());
