@@ -4,14 +4,14 @@ namespace Marijnworks\Zoomroulette\Zoom;
 
 use Exception;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Marijnworks\Zoomroulette\Zoomroulette\UserNotFoundException;
+use Marijnworks\Zoomroulette\Zoomroulette\UserRepository;
 use PDOException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use SlimSession\Helper;
-use Marijnworks\Zoomroulette\Zoomroulette\UserNotFoundException;
-use Marijnworks\Zoomroulette\Zoomroulette\UserRepository;
 
 class OauthRequestHandler
 {
