@@ -9,6 +9,7 @@ class UserRepository
     const TABLE_NAME = 'users';
 
     private Connection $connection;
+
     private EncryptionToolkit $encryptionToolkit;
 
     public function __construct(Connection $connection, EncryptionToolkit $encryptionToolkit)
@@ -29,7 +30,7 @@ class UserRepository
                 'zoom_credentials' => $this->encryptionToolkit->encrypt(json_encode($user->getZoomAccessToken())),
             ]
         );
-        $user->setId($this->connection->lastInsertId());
+        $user->setId((int) $this->connection->lastInsertId());
 
         return $user;
     }

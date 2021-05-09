@@ -27,10 +27,10 @@ class SpinRepository
             ]
         );
 
-        return $spin->withId($this->connection->lastInsertId());
+        return $spin->withId((int) $this->connection->lastInsertId());
     }
 
-    public function claimSpotByUuid(UuidInterface $uuid)
+    public function claimSpotByUuid(UuidInterface $uuid): Spin
     {
         $this->connection->beginTransaction();
 

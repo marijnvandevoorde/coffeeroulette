@@ -3,9 +3,9 @@
 namespace Marijnworks\Zoomroulette\Slack;
 
 use League\OAuth2\Client\Token\AccessTokenInterface;
+use Marijnworks\Zoomroulette\Slack\OauthProvider as OauthProviderAlias;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
-use Marijnworks\Zoomroulette\Slack\OauthProvider as OauthProviderAlias;
 
 class SlackApiRepository
 {
@@ -19,7 +19,7 @@ class SlackApiRepository
         $this->logger = $logger;
     }
 
-    public function post(string $url, string $body, AccessTokenInterface $accessToken)
+    public function post(string $url, string $body, AccessTokenInterface $accessToken): ResponseInterface
     {
         $request = $this->oauthProvider->getAuthenticatedRequest(
             'POST',

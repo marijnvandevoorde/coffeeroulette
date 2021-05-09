@@ -20,16 +20,16 @@ use SlimSession\Helper;
 class SessionMiddleware
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $settings;
 
     /**
      * Constructor.
      *
-     * @param array $settings
+     * @param array<string, mixed> $settings
      */
-    public function __construct($settings = [])
+    public function __construct(array $settings = [])
     {
         $defaults = [
             'lifetime' => '20 minutes',
@@ -76,7 +76,7 @@ class SessionMiddleware
     /**
      * Start session.
      */
-    protected function startSession()
+    protected function startSession(): void
     {
         $inactive = session_status() === PHP_SESSION_NONE;
         if (!$inactive) {
@@ -118,11 +118,14 @@ class SessionMiddleware
             session_set_save_handler($handler, true);
         }
 
-        session_cache_limiter(false);
+        session_cache_limiter('');
         session_start();
     }
 
-    protected function iniSet($settings)
+    /**
+     * @param array<string, mixed> $settings
+     */
+    protected function iniSet(array $settings): void
     {
         foreach ($settings as $key => $val) {
             if (strpos($key, 'session.') === 0) {

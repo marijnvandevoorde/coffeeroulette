@@ -4,14 +4,14 @@ namespace Marijnworks\Zoomroulette\Zoom;
 
 use Exception;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Marijnworks\Zoomroulette\Zoomroulette\UserNotFoundException;
+use Marijnworks\Zoomroulette\Zoomroulette\UserRepository;
 use PDOException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 use SlimSession\Helper;
-use Marijnworks\Zoomroulette\Zoomroulette\UserNotFoundException;
-use Marijnworks\Zoomroulette\Zoomroulette\UserRepository;
 
 class OauthRequestHandler
 {
@@ -41,7 +41,13 @@ class OauthRequestHandler
         $this->templateEngine = $templateEngine;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args)
+    /**
+     * @param array<string,string> $args
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
         if (!isset($_GET['code'])) {
             // Fetch the authorization URL from the provider; this returns the
@@ -73,7 +79,7 @@ class OauthRequestHandler
                 'code' => $_GET['code'],
             ]);
             //$owner = $this->oauthProvider->getResourceOwner($accessToken);
-            /** @var Helper $session */
+            /** @var Helper<string,string> $session */
             $session = $request->getAttribute('session');
             $user = $this->userRepository->findById($session->get('userid'));
             $user->setZoomUserid(uniqid('zm_'));
