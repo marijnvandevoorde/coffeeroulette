@@ -2,9 +2,6 @@
 
 namespace Marijnworks\Zoomroulette\Slack;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerInterface;
 use Marijnworks\Zoomroulette\Zoom\CouldNotCreateMeetingException;
 use Marijnworks\Zoomroulette\Zoom\OauthProvider as ZoomOauthProviderAlias;
 use Marijnworks\Zoomroulette\Zoom\ZoomApiRepository;
@@ -13,6 +10,9 @@ use Marijnworks\Zoomroulette\Zoomroulette\SpinRepository;
 use Marijnworks\Zoomroulette\Zoomroulette\User;
 use Marijnworks\Zoomroulette\Zoomroulette\UserNotFoundException;
 use Marijnworks\Zoomroulette\Zoomroulette\UserRepository;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 
 class SpinCommandHandler
 {
@@ -41,7 +41,12 @@ class SpinCommandHandler
         $this->spinRepository = $spinRepository;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args)
+    /**
+     * @param array<string,string> $args
+     * @return ResponseInterface
+     * @throws \League\OAuth2\Client\Provider\Exception\IdentityProviderException
+     */
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
         $body = $request->getParsedBody();
         $this->logger->debug('slash command received', [

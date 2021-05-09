@@ -28,7 +28,7 @@ phpstan:
 	docker run --init -it --rm \
     		-v "$(PWD):/project" -v "$(PWD)/tmp-phpqa:/tmp" -w /project \
     		jakzal/phpqa:php7.4-alpine phpstan analyse \
-    		--level=4 src 
+    		--level=6 src 
 lint-fix:
 		docker run --init -it --rm \
 		-v "$(PWD):/project" -v "$(PWD)/tmp-phpqa:/tmp" -w /project \

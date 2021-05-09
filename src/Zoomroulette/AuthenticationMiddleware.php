@@ -23,7 +23,7 @@ class AuthenticationMiddleware
 
     public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        /** @var Helper $session */
+        /** @var Helper<string, string> $session */
         $session = $request->getAttribute('session');
         if (!$session->exists('userid')) {
             $response = $this->responseFactory->createResponse();
