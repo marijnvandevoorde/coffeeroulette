@@ -37,7 +37,13 @@ class OauthRequestHandler
         $this->templateEngine = $templateEngine;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args)
+    /**
+     * @param array<string,string> $args
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
         if (!isset($_GET['code'])) {
             // Fetch the authorization URL from the provider; this returns the
@@ -51,7 +57,7 @@ class OauthRequestHandler
 
             return $response->withHeader('Location', $authorizationUrl)->withStatus(302);
         }
-        /** @var Helper $session */
+        /** @var Helper<string> $session */
         $session = $request->getAttribute('session');
 
         if (empty($_GET['state']) || $session->exists('oauht2state') && $_GET['state'] !== $session->get('oauth2state')) {

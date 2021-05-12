@@ -22,7 +22,10 @@ class Spin
         $this->uuid = Uuid::uuid4();
     }
 
-    public static function withSqlRecord(array $record): self
+    /**
+     * @param array{id:int, joinlink:string, openspots:int, uuid:string} $record
+     */
+    public static function withSqlRecord(array $record): Spin
     {
         $spin = new self($record['joinlink'], $record['openspots']);
         $spin->id = $record['id'];

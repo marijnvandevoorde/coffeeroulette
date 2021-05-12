@@ -41,7 +41,12 @@ class SpinCommandHandler
         $this->spinRepository = $spinRepository;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args)
+    /**
+     * @param array<string,string> $args
+     * @return ResponseInterface
+     * @throws \League\OAuth2\Client\Provider\Exception\IdentityProviderException
+     */
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
         $body = $request->getParsedBody();
         $this->logger->debug('slash command received', [
