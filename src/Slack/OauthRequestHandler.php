@@ -50,7 +50,7 @@ class OauthRequestHandler
             // urlAuthorize option and generates and applies any necessary parameters
             // (e.g. state).
             $authorizationUrl = $this->oauthProvider->getAuthorizationUrl([
-                'scope' => ['chat:write commands', 'chat:write.customize', 'chat:write.public'],
+                'scope' => ['commands'],
             ]);
 
             $request->getAttribute('session')->set('oauth2state', $this->oauthProvider->getState());

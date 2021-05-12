@@ -54,6 +54,28 @@ class SpinCommandHandler
             'text' => $body['text'],
         ]);
 
+        if (!empty($body['text']) && $body['text'] === 'help') {
+            $response->getBody()->write('{
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+				    "text": "Grab a coffee with a not-so-stranger at work.
+
+Coffee roulette will spin up a Zoom meeting and post a link to it on your behalf. Only the first person to click the link will be able to join your meeting, unless you add a number to the command to allow some more people to your coffee table! 
+
+Just try it by calling the `/coffeeroulette` command now!
+
+For more information, visit <https://coffeeroulette.madewithlove.com|coffeeroulette.madewithlove.com>"
+                        }
+                    }
+                ]
+            }');
+
+            return $response->withHeader('Content-type', 'application/json');
+        }
+
         try {
             /** @var User $user */
             $user = $this->userRepository->findBySsoId('slack', $body['user_id']);
