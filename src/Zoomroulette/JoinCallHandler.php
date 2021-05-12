@@ -21,7 +21,10 @@ class JoinCallHandler
         $this->spinRepository = $spinRepository;
     }
 
-    public function __invoke(RequestInterface $request, ResponseInterface $response, $args)
+    /**
+     * @param array<string, string> $args
+     */
+    public function __invoke(RequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
         try {
             $spin = $this->spinRepository->claimSpotByUuid(Uuid::fromString($args['id']));

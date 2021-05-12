@@ -26,7 +26,10 @@ class User
         $this->accessToken = $accessToken;
     }
 
-    public static function withSqlRecord(array $record): self
+    /**
+     * @param array{sso_credentials:string, sso_platform:string, sso_userid:string, id:int,zoom_userid:string, zoom_credentials:string} $record
+     */
+    public static function withSqlRecord(array $record): User
     {
         $accessToken = json_decode($record['sso_credentials'], true);
         $user = new self($record['sso_platform'], $record['sso_userid'], new AccessToken($accessToken));

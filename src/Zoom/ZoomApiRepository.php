@@ -18,7 +18,7 @@ class ZoomApiRepository
         $this->logger = $logger;
     }
 
-    public function getMe(AccessTokenInterface $accessToken)
+    public function getMe(AccessTokenInterface $accessToken): ResponseInterface
     {
         $request = $this->oauthProvider->getAuthenticatedRequest(
             'GET',

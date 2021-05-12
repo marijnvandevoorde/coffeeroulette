@@ -19,7 +19,7 @@ class SlackApiRepository
         $this->logger = $logger;
     }
 
-    public function post(string $url, string $body, AccessTokenInterface $accessToken)
+    public function post(string $url, string $body, AccessTokenInterface $accessToken): ResponseInterface
     {
         $request = $this->oauthProvider->getAuthenticatedRequest(
             'POST',

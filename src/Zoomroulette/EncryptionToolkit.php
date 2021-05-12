@@ -14,12 +14,12 @@ class EncryptionToolkit
         $this->key = $key;
     }
 
-    public function encrypt($plainText)
+    public function encrypt(string $plainText): string
     {
         return Crypto::encrypt($plainText, $this->key);
     }
 
-    public function decrpyt($cipherText)
+    public function decrpyt(string $cipherText): string
     {
         return Crypto::decrypt($cipherText, $this->key);
     }

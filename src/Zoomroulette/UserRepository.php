@@ -30,7 +30,7 @@ class UserRepository
                 'zoom_credentials' => $this->encryptionToolkit->encrypt(json_encode($user->getZoomAccessToken())),
             ]
         );
-        $user->setId($this->connection->lastInsertId());
+        $user->setId((int) $this->connection->lastInsertId());
 
         return $user;
     }
