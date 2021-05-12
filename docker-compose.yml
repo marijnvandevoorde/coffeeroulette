@@ -1,13 +1,13 @@
 version: '3.3'
 services:
-  zoomroulette-webserver:
+  coffeeroulette-webserver:
     environment:
-      - VIRTUAL_HOST=coffeeroulette.isitspringyet.be
+      - VIRTUAL_HOST=coffeeroulette.madewithlove.com
       - VIRTUAL_PORT=80
-      - LETSENCRYPT_HOST=coffeeroulette.isitspringyet.be
+      - LETSENCRYPT_HOST=coffeeroulette.madewithlove.com
       - LETSENCRYPT_EMAIL=marijnnn@gmail.com
     image: 'nginx:alpine'
-    container_name: zoomroulette-webserver
+    container_name: coffeeroulette-webserver
     working_dir: /application
     volumes:
       - '.:/code'
@@ -19,7 +19,7 @@ services:
       - '80'
   php-fpm:
     build: ./docker/php
-    container_name: zoomroulette-php-fpm
+    container_name: coffeeroulette-php-fpm
     working_dir: /code
     expose:
       - '9000'
