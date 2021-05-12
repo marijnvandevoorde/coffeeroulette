@@ -44,7 +44,6 @@ class HelpCommandHandler
             'command' => $body['command'],
             'text' => $body['text'],
         ]);
-
         $response->getBody()->write('{
                 "blocks": [
                     {
@@ -61,7 +60,7 @@ For more information, visit <https://coffeeroulette.madewithlove.com|coffeeroule
                         }
                     }
                 ]
-            }');
+        }');
 
         return $response->withHeader('Content-type', 'application/json');
     }
