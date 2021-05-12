@@ -37,7 +37,11 @@ class HelpCommandHandler
         $this->spinRepository = $spinRepository;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args)
+    /**
+     * @param array<string,string> $args
+     * @throws \League\OAuth2\Client\Provider\Exception\IdentityProviderException
+     */
+    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
     {
         $body = $request->getParsedBody();
         $this->logger->debug('slash command received', [
