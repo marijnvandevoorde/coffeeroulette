@@ -35,7 +35,7 @@ class SpinRepository
         $this->connection->beginTransaction();
 
         try {
-            $rowsUpdated = $this->connection->executeUpdate(
+            $rowsUpdated = $this->connection->executeStatement(
                 'UPDATE spins
                         SET openspots = openspots -1
                         WHERE uuid = :uuid
@@ -69,9 +69,9 @@ class SpinRepository
             ->from(self::TABLE_NAME)
             ->where('id = :id')
             ->setParameter('id', $id)
-            ->execute();
+            ->executeQuery();
 
-        $row = $result->fetch();
+        $row = $result->fetchAssociative();
         if (!$row) {
             throw new SpinNotFoundException('No spin by id ' . $id);
         }
@@ -86,9 +86,9 @@ class SpinRepository
             ->from(self::TABLE_NAME)
             ->where('uuid = :uuid')
             ->setParameter('uuid', $uuid->toString())
-            ->execute();
+            ->executeQuery();
 
-        $row = $result->fetch();
+        $row = $result->fetchAssociative();
         if (!$row) {
             throw new SpinNotFoundException('No spin by id ' . $uuid->toString());
         }
