@@ -59,9 +59,9 @@ class UserRepository
             ->from(self::TABLE_NAME)
             ->where('id = :id')
             ->setParameter('id', $id)
-            ->execute();
+            ->executeQuery();
 
-        $row = $result->fetch();
+        $row = $result->fetchAssociative();
         if (!$row) {
             throw new UserNotFoundException('No user by this id');
         }
@@ -80,9 +80,9 @@ class UserRepository
             ->where('sso_userid = :sso_userid')
             ->setParameter('sso_platform', $ssoPlatform)
             ->setParameter('sso_userid', $ssoUserId)
-            ->execute();
+            ->executeQuery();
 
-        $row = $result->fetch();
+        $row = $result->fetchAssociative();
         if (!$row) {
             throw new UserNotFoundException('No user by this id');
         }

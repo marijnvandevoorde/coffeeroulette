@@ -3,6 +3,7 @@
 use Defuse\Crypto\Key;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Tools\DsnParser;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Marijnworks\Zoomroulette\Slack\OauthProvider as SlackOauthProvider;
@@ -20,29 +21,30 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $container = new Container();
 
-$container->share('settings', fn () => [
+$container->addShared('settings', fn () => [
     'displayErrorDetails' => $_ENV['DISPLAY_ERROR_DETAILS'] === 'true',
 ]);
 
-$container->share(SessionMiddleware::class, fn () => new SessionMiddleware([
+$container->addShared(SessionMiddleware::class, fn () => new SessionMiddleware([
     'name' => 'covfeferoulette',
     'autorefresh' => true,
     'lifetime' => '20 minutes',
 ]));
 
-$container->share(SlackCommandAuthenticationMiddleware::class, fn () => new SlackCommandAuthenticationMiddleware(
+$container->addShared(SlackCommandAuthenticationMiddleware::class, fn () => new SlackCommandAuthenticationMiddleware(
     $_ENV['SLACK_SIGNINGSECRET'],
     $container->get(LoggerInterface::class)
 ));
 
-$container->share(Connection::class, fn () => DriverManager::getConnection([
-    'url' => $_ENV['DATABASE_URL'],
-]));
+// DBAL 4 removed the 'url' connection parameter; parse the DSN explicitly.
+$container->addShared(Connection::class, fn () => DriverManager::getConnection(
+    (new DsnParser(['mysql' => 'pdo_mysql']))->parse($_ENV['DATABASE_URL'])
+));
 
 // register the reflection container as a delegate to enable auto wiring
 $container->delegate(new ReflectionContainer());
 
-$container->share(ZoomOauthProviderAlias::class, fn () => new ZoomOauthProviderAlias([
+$container->addShared(ZoomOauthProviderAlias::class, fn () => new ZoomOauthProviderAlias([
     'clientId' => $_ENV['ZOOM_CLIENTID'],
     'clientSecret' => $_ENV['ZOOM_CLIENTSECRET'],
     'redirectUri' => $_ENV['ROOT_URL'] . '/auth/zoom',
@@ -51,9 +53,9 @@ $container->share(ZoomOauthProviderAlias::class, fn () => new ZoomOauthProviderA
     'urlResourceOwnerDetails' => 'https://api.zoom.us/v2/users/me',
 ]));
 
-$container->share(Helper::class, fn () => new Helper());
+$container->addShared(Helper::class, fn () => new Helper());
 
-$container->share(SlackOauthProvider::class, function () {
+$container->addShared(SlackOauthProvider::class, function () {
     return new SlackOauthProvider([
         'clientId' => $_ENV['SLACK_CLIENTID'],
         'clientSecret' => $_ENV['SLACK_CLIENTSECRET'],
@@ -65,18 +67,18 @@ $container->share(SlackOauthProvider::class, function () {
 });
 
 // Set view in Container
-$container->share(Twig::class, fn () => Twig::create(
+$container->addShared(Twig::class, fn () => Twig::create(
     __DIR__ . '/../templates',
     [
         'cache' => __DIR__ . '/../templates/cache',
     ]
 ));
 
-$container->share(EncryptionToolkit::class, fn () => new EncryptionToolkit(
+$container->addShared(EncryptionToolkit::class, fn () => new EncryptionToolkit(
     Key::loadFromAsciiSafeString($_ENV['CRYPTO_SECRET'])
 ));
 
-$container->share(LoggerInterface::class, function () {
+$container->addShared(LoggerInterface::class, function () {
     $log = new Logger('zoomroulette');
     $log->pushHandler(new StreamHandler('php://stdout', Logger::toMonologLevel($_ENV['LOG_LEVEL'])));
 
