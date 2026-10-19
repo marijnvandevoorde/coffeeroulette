@@ -32,5 +32,8 @@
             "Marijnworks\\Zoomroulette\\": "tests/"
         }
     },
-    "license": "MIT"
+    "license": "MIT",
+    "require-dev": {
+        "phpstan/phpstan": "^2.3"
+    }
 }

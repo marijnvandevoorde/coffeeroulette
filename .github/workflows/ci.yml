@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      # Same PHP as docker/php/Dockerfile and config.platform.php.
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer
+          key: composer-${{ hashFiles('composer.lock') }}
+
+      - run: composer install --no-interaction --no-progress
+      - name: Lint
+        run: find src bin public -name '*.php' -print0 | xargs -0 -n1 php -l
+      # There is no test suite; static analysis catches a dependency update
+      # that removes or renames a class or method the code uses.
+      - run: vendor/bin/phpstan analyse --no-progress

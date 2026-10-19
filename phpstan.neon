@@ -1,0 +1,8 @@
+# Level 0 catches unknown classes, functions and methods, which is what a
+# broken dependency update looks like. Raise the level once the code is clean.
+parameters:
+    level: 0
+    paths:
+        - src
+        - public
+        - bin
