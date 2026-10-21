@@ -19,6 +19,8 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    cooldown:
+      default-days: 3
 
   # Docker base image (docker/php/Dockerfile).
   - package-ecosystem: "docker"
@@ -33,6 +35,8 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    cooldown:
+      default-days: 3
 
   # Images in docker-compose.yml at the repo root.
   - package-ecosystem: "docker-compose"
@@ -47,6 +51,8 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    cooldown:
+      default-days: 3
 
   # GitHub Actions used by workflows in .github/workflows/.
   - package-ecosystem: "github-actions"
@@ -61,3 +67,5 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    cooldown:
+      default-days: 3
