@@ -101,21 +101,21 @@ class OauthRequestHandler
                 return $response->withStatus(200);
             }
         } catch (IdentityProviderException $e) {
-            $this->logger->error('Failed to get access token or user details', $e->getTrace());
+            $this->logger->error('Failed to get access token or user details', ['error' => $e->getMessage()]);
 
             $response->getBody()->write(
                 $this->templateEngine->getEnvironment()->render('slackauth.html', ['error' => 'Something went wrong, please try again'])
             );
 
-            return $response->withStatus(400, $e->getMessage());
+            return $response->withStatus(400);
         } catch (Exception $e) {
-            $this->logger->error('Failed to get access token or user details', $e->getTrace());
+            $this->logger->error('Failed to get access token or user details', ['error' => $e->getMessage()]);
 
             $response->getBody()->write(
                 $this->templateEngine->getEnvironment()->render('slackauth.html', ['error' => 'Something went wrong, please try again'])
             );
 
-            return $response->withStatus(400, $e->getMessage());
+            return $response->withStatus(400);
         }
     }
 }
